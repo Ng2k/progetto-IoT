@@ -1,8 +1,8 @@
 // C++ code
 //
 const byte ledRGBPins[3] = { 11, 9, 10 };
-const byte pirInPin = 2;
-const byte pirOutPin = 4;
+const byte btnInPin = 2;
+const byte btnOutPin = 4;
 
 const byte idleRGB[3] = { 0, 0, 255 };
 const byte exitRGB[3] = { 255, 0, 0 };
@@ -20,14 +20,14 @@ enum State {
 };
 
 // inputs:
-enum PirRead { MOVEMENT, STATIC };
+enum ButtonInput { PRESSED, RELEASED };
 
 // outputs:
 enum Output { OFF, ENTER, EXIT };
 
 State iCurrentState;
-PirRead iPirInput;
-PirRead iPirOutput;
+ButtonInput iBtnInput;
+ButtonInput iBtnOutput;
 unsigned long lastTime;
 unsigned short crowdCounter;
 
@@ -43,13 +43,13 @@ void setup()
 	pinMode(pin, OUTPUT);
   }
   
-  pinMode(pirInPin, INPUT);
-  pinMode(pirOutPin, INPUT);
+  pinMode(btnInPin, INPUT);
+  pinMode(btnOutPin, INPUT);
   
   iCurrentState = IDLE; // set the initial state
 
-  iPirInput = STATIC;
-  iPirOutput = STATIC;
+  iBtnInput = RELEASED;
+  iBtnOutput = RELEASED;
 
   crowdCounter = 0;
   
@@ -70,26 +70,26 @@ void loop()
   
   //Stati: A->A, B->A
   bool isIdle = (
-    (iCurrentState == IDLE) && (iPirInput == STATIC && iPirOutput == STATIC)
+    (iCurrentState == IDLE) && (iBtnInput == RELEASED && iBtnOutput == RELEASED)
   );
   bool isMultipleIn = (
     (iCurrentState == READ_IN_IDLE) &&
     (
-      (iPirInput == MOVEMENT && digitalRead(pirInPin) == HIGH) &&
-      iPirOutput == STATIC
+      (iBtnInput == PRESSED && digitalRead(btnInPin) == HIGH) &&
+      iBtnOutput == RELEASED
     )
   );
   bool isMultipleOut = (
     (iCurrentState == READ_OUT_IDLE) &&
     (
-      (iPirOutput == MOVEMENT && digitalRead(pirOutPin) == HIGH) &&
-      iPirInput == STATIC
+      (iBtnOutput == PRESSED && digitalRead(btnOutPin) == HIGH) &&
+      iBtnInput == RELEASED
     )
   );
   
   if(isIdle || isMultipleIn || isMultipleOut) {
-    iPirInput = STATIC;
-    iPirOutput = STATIC;
+    iBtnInput = RELEASED;
+    iBtnOutput = RELEASED;
     iFutureState = IDLE;
     Serial.println("IDLE");
   }
@@ -97,18 +97,18 @@ void loop()
   //Stato: A->B
   if (
     (iCurrentState == IDLE) &&
-    (digitalRead(pirInPin) == HIGH && iPirOutput == STATIC)
+    (digitalRead(btnInPin) == HIGH && iBtnOutput == RELEASED)
   )
   {
   	iFutureState = READ_IN_IDLE;
-    iPirInput = MOVEMENT;
+    iBtnInput = PRESSED;
     Serial.println("READ_IN_IDLE");
   }
   
   //Stato: B->B
   if(
     (iCurrentState == READ_IN_IDLE) &&
-    (iPirInput == MOVEMENT && iPirOutput == STATIC)
+    (iBtnInput == PRESSED && iBtnOutput == RELEASED)
   )
   {
   	iFutureState = READ_IN_IDLE;
@@ -118,11 +118,11 @@ void loop()
   //Stato: B->IN
   if (
     (iCurrentState == READ_IN_IDLE) &&
-    (iPirInput == MOVEMENT && digitalRead(pirOutPin) == HIGH)
+    (iBtnInput == PRESSED && digitalRead(btnOutPin) == HIGH)
   )
   {
   	iFutureState = IN;
-    iPirOutput = MOVEMENT;
+    iBtnOutput = PRESSED;
     crowdCounter++;
     Serial.println("IN");
     Serial.print("crowdCounter: ");
@@ -133,27 +133,27 @@ void loop()
   //todo: frequenza campionamento realistico per evitare 1000 rilevazioni in = 1 out = 1
   if ((iCurrentState == IN) || (iCurrentState == OUT)) {
     Serial.println("IDLE");
-    iPirOutput = STATIC;
-    iPirInput = STATIC;
+    iBtnOutput = RELEASED;
+    iBtnInput = RELEASED;
   	iFutureState = IDLE;
   }
   
   //Stato: A->E
   if (
     (iCurrentState == IDLE) &&
-    (iPirInput == STATIC && digitalRead(pirOutPin) == HIGH)  &&
+    (iBtnInput == RELEASED && digitalRead(btnOutPin) == HIGH)  &&
     crowdCounter > 0
   )
   {
     iFutureState = READ_OUT_IDLE;
-    iPirOutput = MOVEMENT;
+    iBtnOutput = PRESSED;
     Serial.println("READ_OUT_IDLE");
   }
   
   //Stato: E->E
   if(
     (iCurrentState == READ_OUT_IDLE) &&
-    (iPirInput == STATIC && iPirOutput == MOVEMENT)
+    (iBtnInput == RELEASED && iBtnOutput == PRESSED)
   )
   {
   	Serial.println("READ_OUT_IDLE");
@@ -162,12 +162,12 @@ void loop()
   //Stato: E->OUT
   if (
     (iCurrentState == READ_OUT_IDLE) &&
-    (digitalRead(pirInPin) == HIGH && iPirOutput == MOVEMENT) &&
+    (digitalRead(btnInPin) == HIGH && iBtnOutput == PRESSED) &&
     crowdCounter > 0
   )
   {
   	iFutureState = OUT;
-    iPirInput = MOVEMENT;
+    iBtnInput = PRESSED;
     crowdCounter--;
   	Serial.println("OUT");
     Serial.print("crowdCounter: ");
@@ -194,5 +194,5 @@ void loop()
   if (output == OFF) setRGBLedColor(ledRGBPins , idleRGB);
   if (output == EXIT) setRGBLedColor(ledRGBPins , exitRGB);
   
-  delay(1500);
+  delay(250);
 }
