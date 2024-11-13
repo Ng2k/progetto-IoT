@@ -1,0 +1,9 @@
+CRITICITA' PROGETTO DI IoT
+
+	1. Se uno user si ferma mentre è in lettura del sensore di ingresso(uscita), aspetta un tempo abbastanza lungo e si rimette in movimento per eseguire
+	l'ingresso abbiamo la seguente situazione:
+		
+		... -> IDLE -> READ_IN_IDLE -> IDLE -> READ_OUT_IDLE -> …
+
+	Il problema è che un solo ingresso non corretto rischia di rovinare il funzionamento dell'intero sistema in quanto i prossimi ingressi consecutivi
+	andranno a essere registrati come uscite.
