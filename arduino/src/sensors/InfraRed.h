@@ -9,7 +9,6 @@ class InfraRed
 {
     private:
         const byte _pin;
-        Reading _currentReading;
 		Reading _lastReading;
 
     public:
@@ -28,12 +27,26 @@ class InfraRed
         const byte getPin();
 
         /**
+         * @brief Funzione per la lettura dello stato del sensore
+         * 
+         * @return stato del sensore
+         */
+        const Reading getLastReading();
+
+        /**
 		 * @brief Legge lo stato del sensore di movimento.
 		 *
 		 * Questa funzione legge lo stato del sensore di movimento,
 		 * lo imposta come stato del sensore e lo restituisce.
 		 */
 		Reading read();
+
+        /**
+         * @brief Aggiorna l'ultimo stato del sensore
+         * 
+         * @param lastReading ultimo stato del sensore
+         */
+        void updateLastState(Reading lastReading);
 };
 
 #endif // INFRA_RED_H

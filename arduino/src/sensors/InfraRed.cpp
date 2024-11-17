@@ -11,14 +11,14 @@ const byte InfraRed::getPin() {
     return this->_pin;
 }
 
+const Reading InfraRed::getLastReading() {
+	return this->_lastReading;
+}
+
 Reading InfraRed::read() {
-	this->_lastReading = this->_currentReading;
+	return digitalRead(this->_pin) == HIGH ? Reading::READ : Reading::IDLE;
+}
 
-	if(digitalRead(this->_pin) == HIGH) {
-		this->_currentReading = Reading::READ;
-		return this->_currentReading;
-	}
-
-	this->_currentReading = Reading::IDLE;
-	return this->_currentReading;
+void InfraRed::updateLastState(Reading lastReading) {
+	this->_lastReading = lastReading;
 }

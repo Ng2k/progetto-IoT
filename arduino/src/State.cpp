@@ -18,15 +18,20 @@ void IdleState::handle(Context* ctx)
 	InfraRed* enterSensor = ctx->getEnterSensor();
 	InfraRed* exitSensor = ctx->getExitSensor();
 
+    enterSensor->updateLastState(Reading::IDLE);
+    exitSensor->updateLastState(Reading::IDLE);
+
 	if(
 		enterSensor->read() == Reading::READ &&
-		exitSensor->read() == Reading::IDLE
+		exitSensor->read() == Reading::IDLE &&
+        exitSensor->getLastReading() == Reading::IDLE
 	) {
 		ctx->setContextState(new ReadInIdleState());
 	}
 	else if(
 		enterSensor->read() == Reading::IDLE &&
 		exitSensor->read() == Reading::READ &&
+        exitSensor->getLastReading() == Reading::IDLE &&
 		ctx->getPeopleCount() > 0
 	) {
 		ctx->setContextState(new ReadOutIdleState());
@@ -45,15 +50,20 @@ void ReadInIdleState::handle(Context* ctx)
     InfraRed* enterSensor = ctx->getEnterSensor();
     InfraRed* exitSensor = ctx->getExitSensor();
 
+    enterSensor->updateLastState(Reading::READ);
+    exitSensor->updateLastState(Reading::IDLE);
+
     if(
         enterSensor->read() == Reading::IDLE &&
         exitSensor->read() == Reading::READ
     ) {
         ctx->setContextState(new EnterState());
-        return;
+    } else if (
+        enterSensor->read() == Reading::READ &&
+        exitSensor->read() == Reading::IDLE
+    ) {
+        ctx->setContextState(new IdleState());
     }
-    
-    ctx->setContextState(new IdleState());
 }
 
 void ReadOutIdleState::handle(Context* ctx)
@@ -69,16 +79,21 @@ void ReadOutIdleState::handle(Context* ctx)
     InfraRed* enterSensor = ctx->getEnterSensor();
     InfraRed* exitSensor = ctx->getExitSensor();
 
+    enterSensor->updateLastState(Reading::IDLE);
+    exitSensor->updateLastState(Reading::READ);
+
     if(
         enterSensor->read() == Reading::READ &&
         exitSensor->read() == Reading::IDLE &&
         ctx->getPeopleCount() > 0
     ) {
         ctx->setContextState(new ExitState());
-        return;
+    } else if (
+        enterSensor->read() == Reading::IDLE &&
+        exitSensor->read() == Reading::READ
+    ) {
+        ctx->setContextState(new IdleState());
     }
-
-    ctx->setContextState(new IdleState());
 }
 
 void EnterState::handle(Context* ctx)
@@ -97,6 +112,9 @@ void EnterState::handle(Context* ctx)
 
     InfraRed* enterSensor = ctx->getEnterSensor();
     InfraRed* exitSensor = ctx->getExitSensor();
+
+    enterSensor->updateLastState(Reading::READ);
+    exitSensor->updateLastState(Reading::READ);
 
     //todo: chiedere al prof come aggiungere un delay
     ctx->setContextState(new IdleState());
@@ -118,6 +136,9 @@ void ExitState::handle(Context* ctx)
 
     InfraRed* enterSensor = ctx->getEnterSensor();
     InfraRed* exitSensor = ctx->getExitSensor();
+
+    enterSensor->updateLastState(Reading::READ);
+    exitSensor->updateLastState(Reading::READ);
 
     //todo: chiedere al prof come aggiungere un delay
     ctx->setContextState(new IdleState());
