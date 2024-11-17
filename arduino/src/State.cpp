@@ -1,8 +1,8 @@
 #include <Arduino.h>
 
 #include "State.h"
-#include "InfraRed.h"
-#include "Constants.h"
+#include "sensors/InfraRed.h"
+#include "../Constants.h"
 
 State::State() {};
 

@@ -2,8 +2,8 @@
 #define CONTEXT_H
 
 #include "State.h"
-#include "InfraRed.h"
-#include "LedRgb.h"
+#include "sensors/InfraRed.h"
+#include "actuators/LedRgb.h"
 
 class State;
 

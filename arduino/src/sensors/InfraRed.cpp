@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "Constants.h"
+#include "../../Constants.h"
 #include "InfraRed.h"
 
 InfraRed::InfraRed(byte pin): _pin(pin) {

@@ -1,8 +1,8 @@
-#include "InfraRed.h"
+#include "src/sensors/InfraRed.h"
 #include "Constants.h"
-#include "LedRgb.h"
-#include "Context.h"
-#include "State.h"
+#include "src/actuators/LedRgb.h"
+#include "src/Context.h"
+#include "src/State.h"
 
 // Contesto del sistema
 Context* context;
