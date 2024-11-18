@@ -1,0 +1,5 @@
+IDEE PER PROGETTO IoT
+
+1. CODICE UNIVOCO PER LO STAND: l'idea è di creare a livello db per ogni evento una tabella dopo il processo di iscrizione svolto dall'admin, e in base alle
+info ricevute sappiamo quanti microcontrollori saranno quindi necessari. Prenderemo quindi il codice univoco relativo al microcontrollore e lo metteremo
+(a livello db) in associazione con lo stand preciso. Non dobbiamo quindi creare "a caso" un id univoco che rappresenti il microcontrollore ogni volta.
