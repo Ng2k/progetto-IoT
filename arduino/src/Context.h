@@ -16,7 +16,6 @@ private:
     unsigned short _peopleCount;
     unsigned long _lastExecutionTime;
     Output _contextOutput;
-    //ActuatorManager _actuatorManager;
 public:
     /**
      * @brief Constructor for Context class
@@ -29,7 +28,6 @@ public:
         InfraRed* exitSensor,
         LedRgb* ledRgb,
         Output contextOutput,
-        //ActuatorManager actuatorManager,
         unsigned short peopleCount,
         unsigned long lastExecutionTime
     );
