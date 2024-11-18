@@ -59,11 +59,11 @@ class SerialCommunication:
         Returns:
             str: The received data as a decoded string.
         """
-        if !self.ser:
+        if not self.ser:
             print("Serial connection is not open.")
             return None
 
-        if !self.is_data_available():
+        if not self.is_data_available():
             print("Data not available.")
             return None
 
