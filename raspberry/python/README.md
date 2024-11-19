@@ -50,7 +50,7 @@ Prima di proseguire è necessario attivare l'ambiente di sviluppo
 
 Una volta attivato l'ambiente basterà solamente aggiornare pip (per evenienza) e proseguire con l'installazione di tutte le librerie necessarie
 
-	$ pip3 install --upgrade pip3 && pip3 install -r requirements.txt
+	$ pip install --upgrade pip && pip install -r requirements.txt
 
 ## Authors
 
