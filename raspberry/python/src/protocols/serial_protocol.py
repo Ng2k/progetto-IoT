@@ -10,15 +10,18 @@ class SerialProtocol(asyncio.Protocol):
     """
     Protocol for handling serial data received via pyserial-asyncio.
     """
-    def __init__(self):
-        self.transport = None
+    def __init__(self, serial_number):
+        self._transport = None
+        self._serial_number = serial_number
 
     def connection_made(self, transport):
-        self.transport = transport
+        self._transport = transport
         print("Serial connection established.")
 
     def data_received(self, data):
-        print(f"Received data: {data.decode().strip()}")
+        device = self._serial_number
+        payload = data.decode().strip()
+        print(f"Received data from device {device}: {payload}")
 
     def connection_lost(self, exc):
         print("Serial connection lost.")

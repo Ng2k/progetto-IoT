@@ -16,24 +16,25 @@ class SerialCommunication(ICommunication):
     Asynchronous Serial Communication Handler using pyserial-asyncio
     """
 
-    def __init__(self, port: str, baudrate: int = 9600):
-        self.port = port
-        self.baudrate = baudrate
-        self.transport = None
+    def __init__(self, port: str, serial_number: str, baudrate: int = 9600):
+        self._port = port
+        self._serial_number = serial_number
+        self._baudrate = baudrate
+        self._transport = None
 
     async def read_data(self):
-        self.transport, _ = await serial_asyncio.create_serial_connection(
+        self._transport, _ = await serial_asyncio.create_serial_connection(
             loop = asyncio.get_event_loop(),
-            protocol_factory = SerialProtocol,
-            url = self.port,
-            baudrate = self.baudrate
+            protocol_factory = lambda: SerialProtocol(self._serial_number),
+            url = self._port,
+            baudrate = self._baudrate
         )
-        print(f"Started listening to serial port {self.port}")
+        print(f"Started listening to serial port {self._port}")
         await asyncio.sleep(3600)  # Keep listening for 1 hour
 
     def __str__(self):
         return json.dumps({
-            "port": self.port,
-            "baudrate": self.baudrate,
-            "transport": self.transport
+            "port": self._port,
+            "baudrate": self._baudrate,
+            "transport": self._transport
         })

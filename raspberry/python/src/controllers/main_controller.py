@@ -7,7 +7,7 @@ Author:
 import asyncio
 from typing import List
 
-from ..communications.ble_communication import BLECommunication
+#from ..communications.ble_communication import BLECommunication
 from ..communications.serial_communication import SerialCommunication
 from ..communications.communication_interface import ICommunication
 
@@ -33,15 +33,15 @@ class MainController:
         """
         serial_devices = device_list["serial_devices"]
         serial_handlers = [
-            SerialCommunication(device["port"]) for device in serial_devices
+            SerialCommunication(device["port"], device["serial_number"]) for device in serial_devices
         ]
 
-        ble_devices = device_list["ble_devices"]
-        ble_handlers = [
-            BLECommunication(device["address"]) for device in ble_devices
-        ]
+        #ble_devices = device_list["ble_devices"]
+        #ble_handlers = [
+        #    BLECommunication(device["address"]) for device in ble_devices
+        #]
 
-        return serial_handlers + ble_handlers
+        return serial_handlers #+ ble_handlers
 
     async def _create_task_list(
         self,

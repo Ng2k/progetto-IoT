@@ -4,9 +4,8 @@ Author:
     - Tommaso Mortara <>
 """
 from asyncio import Lock
-
+import pyudev
 from bleak import BleakScanner
-from serial.tools import list_ports
 
 class DeviceScanner:
     """
@@ -20,15 +19,15 @@ class DeviceScanner:
         Returns:
             dict: A dictionary containing BLE devices and serial devices.
         """
-        # Scan BLE devices asynchronously
-        print("Scanning for BLE devices...")
-        ble_result = await self._scan_ble_devices()
+        # todo: Scan BLE devices asynchronously
+        #print("Scanning for BLE devices...")
+        #ble_result = await self._scan_ble_devices()
 
         # Scan serial devices
         print("Scanning for serial devices...")
         serial_devices = await self._scan_serial_devices()
 
-        return {"ble_devices": ble_result, "serial_devices": serial_devices}
+        return {"serial_devices": serial_devices } #, "ble_devices": ble_result, }
 
     async def _scan_serial_devices(self) -> list[dict]:
         """
@@ -37,12 +36,15 @@ class DeviceScanner:
         Returns:
             list[dict]: A list of serial devices.
         """
-        ports = list_ports.comports()
+        context = pyudev.Context()
         return [
             {
-                "port": port.device,
-                "description": port.description
-            } for port in ports
+                "port": device.device_node,
+                "description": device.get("ID_USB_MODEL", "Unknown"),
+                "serial_number": device["ID_SERIAL_SHORT"]
+            }
+            for device in context.list_devices(subsystem="tty")
+            if "ID_SERIAL_SHORT" in device
         ]
 
     async def _scan_ble_devices(self) -> dict:
