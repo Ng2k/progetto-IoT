@@ -3,6 +3,7 @@ Author:
 	- Nicola Guerra <nicola.guerra@outlook.com>
     - Tommaso Mortara <>
 """
+import json
 
 import asyncio
 from bleak import BleakClient
@@ -19,12 +20,18 @@ class BLECommunication(ICommunication):
         self.client = None
 
     async def read_data(self):
-        async with BleakClient(self.device_address) as client:
-            print(f"Connected to BLE device: {self.device_address}")
-            self.client = client
-            while True:
-                # todo Replace with actual characteristics or command to read data from your Arduino
-                data = await self.client.read_gatt_char("CHARACTERISTIC_UUID")
-                print(f"Received BLE data: {data.decode().strip()}")
-                # todo Adjust based on how frequently you want to poll for data
-                await asyncio.sleep(1)
+        try:
+            async with BleakClient(self.device_address) as client:
+                print(f"Connected to BLE device: {self.device_address}")
+                self.client = client
+                while True:
+                    data = await self.client.read_gatt_char("CHARACTERISTIC_UUID")
+                    print(f"Received BLE data: {data.decode().strip()}")
+        except Exception as e:
+            print(f"Error: {e}")
+
+    def __str__(self):
+        return json.dumps({
+            "device_address": self.device_address,
+            "client": self.client,
+        })

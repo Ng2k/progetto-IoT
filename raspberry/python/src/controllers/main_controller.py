@@ -31,15 +31,16 @@ class MainController:
         Returns:
             List[ICommunication]: list of handlers
         """
-        serial_handlers = map(
-            lambda device: SerialCommunication(port=device["port"]),
-            device_list["serial_devices"]
-        )
+        serial_devices = device_list["serial_devices"]
+        serial_handlers = [
+            SerialCommunication(device["port"]) for device in serial_devices
+        ]
 
-        ble_handlers = map(
-            lambda device: BLECommunication(device_address=device["ble_address"]),
-            device_list["ble_devices"]
-        )
+        ble_devices = device_list["ble_devices"]
+        ble_handlers = [
+            BLECommunication(device["address"]) for device in ble_devices
+        ]
+
         return serial_handlers + ble_handlers
 
     async def _create_task_list(
@@ -51,10 +52,13 @@ class MainController:
         Returns:
             List[ICommunication]: list of tasks
         """
-        return [ handler.read_data() for handler in device_handler_list ]
+        async with asyncio.Lock():
+            return [
+                await handler.read_data() for handler in device_handler_list
+            ]
 
     async def run(self) -> None:
         """Method to run all the tasks concurrently"""
-        device_handler_list = self._create_handler_list(self._device_list)
-        task_list = self._create_task_list(device_handler_list)
+        device_handler_list = await self._create_handler_list(self._device_list)
+        task_list = await self._create_task_list(device_handler_list)
         await asyncio.gather(*task_list)

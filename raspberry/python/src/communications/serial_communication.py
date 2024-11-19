@@ -3,6 +3,8 @@ Author:
 	- Nicola Guerra <nicola.guerra@outlook.com>
     - Tommaso Mortara <>
 """
+import json
+
 import asyncio
 import serial_asyncio
 
@@ -23,8 +25,15 @@ class SerialCommunication(ICommunication):
         self.transport, _ = await serial_asyncio.create_serial_connection(
             loop = asyncio.get_event_loop(),
             protocol_factory = SerialProtocol,
-            port = self.port,
+            url = self.port,
             baudrate = self.baudrate
         )
         print(f"Started listening to serial port {self.port}")
         await asyncio.sleep(3600)  # Keep listening for 1 hour
+
+    def __str__(self):
+        return json.dumps({
+            "port": self.port,
+            "baudrate": self.baudrate,
+            "transport": self.transport
+        })
