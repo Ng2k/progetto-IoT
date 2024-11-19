@@ -1,3 +1,9 @@
+"""
+Author:
+	- Nicola Guerra <nicola.guerra@outlook.com>
+    - Tommaso Mortara <>
+"""
+
 class DataPrinter:
     """
     A class responsible for printing the received data.
