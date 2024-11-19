@@ -3,4 +3,4 @@
 bun/
 nodejs/
 __pycache__
-raspberry_IoT/
+**_venv/
