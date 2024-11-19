@@ -7,3 +7,20 @@ CRITICITA' PROGETTO DI IoT
 
 	Il problema è che un solo ingresso non corretto rischia di rovinare il funzionamento dell'intero sistema in quanto i prossimi ingressi consecutivi
 	andranno a essere registrati come uscite.
+
+	2. Essendo lo scopo del progetto quello di gestire ingressi a stand di fiere anche di dimensioni non trascurabili, dobbiamo pensare a come gestire le
+	distanze anche più ampie che il singolo BT o BTE può coprire. Possiamo o utilizzare più bridge SLAVE sparsi che comunicano a un bridge MASTER centrale
+	oppure comunicare direttamente dagli SLAVE al CLOUD. Ci siamo soffermati idealmente più sulla seconda idea, pensando di inserire le comunicazioni in un
+	file .csv, comunicando le prime n righe e cancellando, una volta trasmesse, le stesse (al fine di non perdere dati).
+	
+	SOL2.1
+		slave1 | -> MASTER |
+		slave2 | -> MASTER |
+		...						-> creazione .csv -> CLOUD				
+		slaveM | -> MASTER |
+	
+	SOL2.2
+		bridge1 |	-> creazione 1.csv | -> CLOUD
+		bridge2 |	-> creazione 2.csv | -> CLOUD
+		...									
+		bridgeM |	-> creazione M.csv | -> CLOUD

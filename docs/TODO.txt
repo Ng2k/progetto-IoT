@@ -1,0 +1,4 @@
+18/11   Per la prossima volta vogliamo fare la comunicazione seriale da un Arduino a Bridge del counter,
+        registrandola e applicandovi timestamp e IDArduino.
+        Poi da aggiungere la possibilità di far runnare il codice in parallelo su più porte (4 se seriale
+        USB)
