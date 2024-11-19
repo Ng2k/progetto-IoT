@@ -8,16 +8,16 @@ WORKDIR /app
 COPY . /app
 
 # Step 4: Create a virtual environment inside the container
-RUN python -m venv raspberry_python_serial
+RUN python3 -m venv raspberry_IoT
 
 # Step 5: Activate the virtual environment and install dependencies
-RUN . raspberry_python_serial/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
+RUN . raspberry_IoT/bin/activate && pip3 install --upgrade pip3 && pip3 install -r requirements.txt
 
 # Step 6: Expose the port (if necessary, modify this if your app runs on a specific port)
 EXPOSE 5000
 
 # Step 7: Set the environment variable for the virtual environment activation (to make it active in subsequent commands)
-ENV VIRTUAL_ENV=/app/raspberry_python_serial
+ENV VIRTUAL_ENV=/app/raspberry_IoT
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Step 8: Set the default command to run the Python app
