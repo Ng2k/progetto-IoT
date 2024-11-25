@@ -4,6 +4,7 @@ Author:
     - Tommaso Mortara <>
 """
 
+from datetime import datetime
 import asyncio
 
 class SerialProtocol(asyncio.Protocol):
@@ -19,9 +20,13 @@ class SerialProtocol(asyncio.Protocol):
         print("Serial connection established.")
 
     def data_received(self, data):
-        device = self._serial_number
-        payload = data.decode().strip()
-        print(f"Received data from device {device}: {payload}")
+        payload = {
+            "device_serial_number": self._serial_number,
+            "people": data.decode().strip(), # todo parse ad int
+            "timestamp": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        }
+
+        print(f"[{payload['timestamp']}] - Received data from device {payload['device_serial_number']}: {payload['people']}")
 
     def connection_lost(self, exc):
         print("Serial connection lost.")

@@ -4,6 +4,7 @@ Author:
     - Tommaso Mortara <>
 """
 from asyncio import Lock
+from typing import List
 import pyudev
 from bleak import BleakScanner
 
@@ -29,7 +30,7 @@ class DeviceScanner:
 
         return { "serial_devices": serial_devices } #, "ble_devices": ble_result, }
 
-    async def _scan_serial_devices(self) -> list[dict]:
+    async def _scan_serial_devices(self) -> List[dict]:
         """
         Scans for serial devices connected to the system.
 

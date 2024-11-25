@@ -115,7 +115,6 @@ void EnterState::handle(Context* ctx)
     enterSensor->updateLastState(Reading::READ);
     exitSensor->updateLastState(Reading::READ);
 
-    //todo: chiedere al prof come aggiungere un delay
     ctx->setContextState(new IdleState());
 }
 
@@ -138,6 +137,5 @@ void ExitState::handle(Context* ctx)
     enterSensor->updateLastState(Reading::READ);
     exitSensor->updateLastState(Reading::READ);
 
-    //todo: chiedere al prof come aggiungere un delay
     ctx->setContextState(new IdleState());
 }
