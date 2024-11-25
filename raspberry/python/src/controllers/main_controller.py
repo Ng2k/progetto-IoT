@@ -32,6 +32,7 @@ class MainController:
             List[ICommunication]: list of handlers
         """
         serial_devices = device_list["serial_devices"]
+        
         serial_handlers = [
             SerialCommunication(device["port"], device["serial_number"]) for device in serial_devices
         ]
@@ -52,10 +53,8 @@ class MainController:
         Returns:
             List[ICommunication]: list of tasks
         """
-        async with asyncio.Lock():
-            return [
-                await handler.read_data() for handler in device_handler_list
-            ]
+
+        return [handler.read_data() for handler in device_handler_list]
 
     async def run(self) -> None:
         """Method to run all the tasks concurrently"""

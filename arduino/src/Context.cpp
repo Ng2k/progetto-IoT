@@ -8,7 +8,7 @@ Context::Context(
     InfraRed* exitSensor,
     LedRgb* ledRgb,
     Output contextOutput,
-    unsigned short peopleCount,
+    int peopleCount,
     unsigned long lastExecutionTime
 )
 {

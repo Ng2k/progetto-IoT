@@ -8,8 +8,8 @@ State::State() {};
 
 void IdleState::handle(Context* ctx)
 {
-    Serial.println("-------------------------------------");
-    Serial.println("IDLE");
+    /* Serial.println("-------------------------------------");
+    Serial.println("IDLE"); */
     LedRgb* ledRgb = ctx->getLedRgb();
     ledRgb->changeLedColor(idleRgb);
 
@@ -40,8 +40,8 @@ void IdleState::handle(Context* ctx)
 
 void ReadInIdleState::handle(Context* ctx)
 {
-    Serial.println("-------------------------------------");
-    Serial.println("READ_IN_IDLE");
+    /* Serial.println("-------------------------------------");
+    Serial.println("READ_IN_IDLE"); */
     LedRgb* ledRgb = ctx->getLedRgb();
     ledRgb->changeLedColor(idleRgb);
 
@@ -68,8 +68,8 @@ void ReadInIdleState::handle(Context* ctx)
 
 void ReadOutIdleState::handle(Context* ctx)
 {
-    Serial.println("-------------------------------------");
-    Serial.println("READ_OUT_IDLE");
+    /* Serial.println("-------------------------------------");
+    Serial.println("READ_OUT_IDLE"); */
 
     LedRgb* ledRgb = ctx->getLedRgb();
     ledRgb->changeLedColor(idleRgb);
@@ -98,8 +98,8 @@ void ReadOutIdleState::handle(Context* ctx)
 
 void EnterState::handle(Context* ctx)
 {
-    Serial.println("-------------------------------------");
-    Serial.println("ENTER");
+    /* Serial.println("-------------------------------------");
+    Serial.println("ENTER"); */
 
     LedRgb* ledRgb = ctx->getLedRgb();
     ledRgb->changeLedColor(enterRgb);
@@ -116,14 +116,13 @@ void EnterState::handle(Context* ctx)
     enterSensor->updateLastState(Reading::READ);
     exitSensor->updateLastState(Reading::READ);
 
-    //todo: chiedere al prof come aggiungere un delay
     ctx->setContextState(new IdleState());
 }
 
 void ExitState::handle(Context* ctx)
 {
-    Serial.println("-------------------------------------");
-    Serial.println("EXIT");
+    /* Serial.println("-------------------------------------");
+    Serial.println("EXIT"); */
 
     LedRgb* ledRgb = ctx->getLedRgb();
     ledRgb->changeLedColor(exitRgb);
@@ -140,6 +139,5 @@ void ExitState::handle(Context* ctx)
     enterSensor->updateLastState(Reading::READ);
     exitSensor->updateLastState(Reading::READ);
 
-    //todo: chiedere al prof come aggiungere un delay
     ctx->setContextState(new IdleState());
 }
