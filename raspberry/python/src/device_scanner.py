@@ -27,7 +27,7 @@ class DeviceScanner:
         print("Scanning for serial devices...")
         serial_devices = await self._scan_serial_devices()
 
-        return {"serial_devices": serial_devices } #, "ble_devices": ble_result, }
+        return { "serial_devices": serial_devices } #, "ble_devices": ble_result, }
 
     async def _scan_serial_devices(self) -> list[dict]:
         """

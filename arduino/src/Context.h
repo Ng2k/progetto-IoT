@@ -13,7 +13,7 @@ private:
     InfraRed* _enterSensor;
     InfraRed* _exitSensor;
     LedRgb* _ledRgb;
-    unsigned short _peopleCount;
+    int _peopleCount;
     unsigned long _lastExecutionTime;
     Output _contextOutput;
 public:
@@ -28,7 +28,7 @@ public:
         InfraRed* exitSensor,
         LedRgb* ledRgb,
         Output contextOutput,
-        unsigned short peopleCount,
+        int peopleCount,
         unsigned long lastExecutionTime
     );
 
@@ -74,7 +74,7 @@ public:
      *
      * @return numero di persone 
     */
-    unsigned short getPeopleCount() { return this->_peopleCount; }
+    int getPeopleCount() { return this->_peopleCount; }
 
     void incrementPeopleCount() { this->_peopleCount++; }
     void decrementPeopleCount() { this->_peopleCount--; }

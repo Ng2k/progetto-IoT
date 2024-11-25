@@ -2,7 +2,7 @@
 #define CONSTANTS_H
 
 // Pin del LED RGB
-const byte ledRgbPins[3] = { 11, 9, 10 };
+const byte ledRgbPins[3] = { 11, 9, 7 };
 
 // Pin dei pulsanti
 const byte enterInfraRedPin = 2;
