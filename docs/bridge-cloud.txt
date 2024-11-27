@@ -1,0 +1,12 @@
+PROBLEMA CONCETTUALE CLUOD E SCONTI
+
+Web Page: home generica -> lista_eventi -> evento singolo (descrizione) -> gestione fiera (privata admin) / gestione stand (privata stand)
++N.B: prima di cominciare a guardare gli eventi, vogliamo che ci sia una pagina per l'admin per registrarsi come tale e aggiungere alle prossime fiere la sua con tanto di lista stand, nome e magari personalizzazione pagina pubblica fiera.
+es. EVENTBRITE
++N.B: Admin vogliamo che abbia visione delle varie opzioni della fiera in tempo reale, con possibilità di aggiungere e togliere stand (fino ad inizio fiera) e di comunicare in tempo reale con questi ultimi.
++N.B: Stand riceve da noi le sue credenziali e accede ad una pagina per ora "passiva" che avrà info varie (storico fiere a cui partecipa per possibili incentivi di utilizzo, ...) e la sezione sconti (scelta di quanto applicare come sconto. Una volta registrato lo sponsorizziamo agli utenti). Da qualche parte arriva al proprietario dello stand la comunicazione se gli conviene applicare sconto.
+
+IMP! L'idea è di creare il web server e il db server con firebase
+
+Locale: L'idea di creare il .csv per mandare tutto in Cloud rimane, ma avremo n bridge con ognuno m microcontrollori, quindi avremo bisogno di un Bridge Master, con server MQTT o broker MQTT o come cazzo si dice, per impostare una comunicazione tra i bridge SLAVE e il bridge MASTER. Questo crea con info congiunte il .csv e si metterà in un modo da definire in comunicazione con l'API per accedere ai servizi Firebase. Inoltre il MASTER si collegherà al db, grazie al quale, e assieme alle info del .csv, potrà avere tutte le info necessarie (nome stand, numero persone) per inserire i dati su monitor (ATTUATORE).
+
