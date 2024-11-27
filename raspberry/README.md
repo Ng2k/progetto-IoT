@@ -16,16 +16,13 @@ Prima di poter eseguire il programma è necessario impostare l'ambiente virtuale
 
 Per avere un ambiente out-of-the-box è possibile usare `docker` usando `docker compose`.
 
-> **NOTA BENE**
-> 
-> Prima di avviare il container, devi creare l'immagine utilizzando il Dockerfile. Puoi farlo con il comando docker build
-> 	
-> 		$ docker build -t raspberry-bridge ./Dockerfile
-
 Eseguire dal terminale il comando per avviare il container con l'ambiente virtuale python già settato e pronto all'utilizzo
 
-	$ docker-compose up
+	$ docker-compose up --build -d
 
+Il flag `--build` serve per ricostruire l'immagine nel caso il file `docker-compose.yml` avesse ricevuto modifiche.
+
+Il flag `-d` serve per far eseguire il container in background
 
 ### Virtual Environment
 
