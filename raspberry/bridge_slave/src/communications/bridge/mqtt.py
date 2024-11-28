@@ -31,7 +31,7 @@ class MQTTCommunication(IBridgeCommunication):
 		self._clientMQTT.on_message = self.on_message
 		print("Connecting to MQTT broker...")
 		self._clientMQTT.connect(
-			self._config.get("MQTT","Server", fallback="localhost"),
+			self._config.get("MQTT","Server", fallback="mqtt-broker"),
 			self._config.getint("MQTT","Port", fallback=1883),
 			keepalive=60
 		)
@@ -45,7 +45,7 @@ class MQTTCommunication(IBridgeCommunication):
 		print(msg.topic + " " + str(msg.payload))
 
 	def publish_data(self, data: dict):
-		topic = self._config.get("MQTT","PubTopic", fallback= "mylight")
+		topic = self._config.get("MQTT","PubTopic", fallback= "bridge/<BRIDGE_ID>/microcontroller")
 		topic = topic.replace("<BRIDGE_ID>", Utils.get_serial()) + "/"
 		topic = topic + data["mc_id"] + "/people"
 		print(topic)
