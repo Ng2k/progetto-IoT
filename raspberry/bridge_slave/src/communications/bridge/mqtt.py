@@ -47,7 +47,7 @@ class MQTTCommunication(IBridgeCommunication):
 	def publish_data(self, data: dict):
 		topic = self._config.get("MQTT","PubTopic", fallback= "mylight")
 		topic = topic.replace("<BRIDGE_ID>", Utils.get_serial()) + "/"
-		topic = topic + data["device_serial_number"] + "/people"
+		topic = topic + data["mc_id"] + "/people"
 		print(topic)
 		self._clientMQTT.publish(topic, json.dumps(data, indent=4))
 

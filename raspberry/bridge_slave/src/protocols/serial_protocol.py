@@ -23,12 +23,12 @@ class SerialProtocol(asyncio.Protocol):
 
     def data_received(self, data):
         payload = {
-            "device_serial_number": self._serial_number,
+            "mc_id": self._serial_number,
             "people": data.decode().strip(), # todo parse ad int
             "timestamp": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         }
-
-        print(f"[{payload['timestamp']}] - Received data from device {payload['device_serial_number']}: {payload['people']}")
+        #todo scrivere in un file log invece che in un print, oppure su un database
+        print(f"[{payload['timestamp']}] - Received data from device {payload['mc_id']}: {payload['people']}")
         # todo: pubblicare dati su topic MQTT
 
         self._mqtt = MQTTCommunication()

@@ -27,7 +27,7 @@ RUN python -m venv raspberry_IoT_venv
 RUN . raspberry_IoT_venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
 
 # Step 6: Expose the port (if necessary, modify this if your app runs on a specific port)
-EXPOSE 5000
+EXPOSE 1883
 
 # Step 7: Set the environment variable for the virtual environment activation (to make it active in subsequent commands)
 ENV VIRTUAL_ENV=/app/raspberry_IoT_venv

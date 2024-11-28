@@ -1,3 +1,9 @@
+"""
+Author:
+	- Nicola Guerra <nicola.guerra@outlook.com>
+	- Tommaso Mortara <>
+"""
+
 class Utils():
 	"""Classe con funzione utility"""
 	@staticmethod
