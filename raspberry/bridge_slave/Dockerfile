@@ -1,6 +1,7 @@
-# Step 1: Use an official Python runtime as a parent image
-FROM python:latest
+# Utilizza Debian 12 (Bookworm) come immagine base
+FROM debian:bookworm
 
+# Mantieni il container aggiornato e installa Python 3
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        python3 \
