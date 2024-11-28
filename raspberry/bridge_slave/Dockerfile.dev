@@ -27,8 +27,5 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
-# Step 6: Expose the port (if necessary, modify this if your app runs on a specific port)
-EXPOSE 1883
-
 # Comando di avvio del container
 CMD ["python", "-m", "src.index"]

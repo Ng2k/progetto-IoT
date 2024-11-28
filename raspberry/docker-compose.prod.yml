@@ -1,29 +1,58 @@
 services:
+  bridge-master:
+    build:
+      context: ./bridge_master
+      dockerfile: Dockerfile.prod
+    container_name: bridge-master
+    networks:
+      - mqtt-network
+    depends_on:
+      - mqtt-broker
+    environment:
+      - PYTHONUNBUFFERED=1  # Abilita log in tempo reale
+      - PYTHON_ENV=development
+      - MQTT_BROKER=${MQTT_BROKER}
+      - MQTT_PORT=${MQTT_PORT}
+      - MQTT_TOPIC=${MQTT_TOPIC}
+    restart: always
+
   bridge-slave:
     build:
       context: ./bridge_slave
       dockerfile: Dockerfile.prod
     container_name: bridge-slave
     devices:
-      - "/dev/ttyACM0:/dev/ttyACM0"  # Map the serial port from host to container
+      - "/dev/ttyACM0:/dev/ttyACM0"  # Montiamo il dispositivo seriale dall'host
     volumes:
+      - "/dev:/dev"
       - ./bridge_slave:/app  # Monta il progetto bridge_slave
     environment:
       - PYTHONUNBUFFERED=1  # Abilita log in tempo reale
-      - PYTHON_ENV=production
+      - PYTHON_ENV=development
+      - MQTT_BROKER=${MQTT_BROKER}
+      - MQTT_PORT=${MQTT_PORT}
+      - MQTT_TOPIC=${MQTT_TOPIC}
+    networks:
+      - mqtt-network
+    depends_on:
+      - mqtt-broker
     restart: always
 
-  bridge-master:
-    build:
-      context: ./bridge_master
-      dockerfile: Dockerfile.prod
-    container_name: bridge-master
+  mqtt-broker:
+    image: eclipse-mosquitto:latest  # Utilizziamo Mosquitto come broker MQTT
+    container_name: mqtt-broker
+    networks:
+      - mqtt-network
+    ports:
+      - "1883:1883"  # Porta MQTT
     volumes:
-      - ./bridge_master:/app  # Monta il progetto bridge_master
-    environment:
-      - PYTHONUNBUFFERED=1  # Abilita log in tempo reale
-      - PYTHON_ENV=production
-      - BROKER=${BROKER}
-      - PORT=${PORT}
-      - TOPIC=${TOPIC}
-    restart: always
+      - mosquitto-data:/mosquitto/data  # Persistenza dei dati del broker
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf # Configurazione broker
+
+networks:
+  mqtt-network:
+    driver: bridge
+
+volumes:
+  mosquitto-data:
+    driver: local

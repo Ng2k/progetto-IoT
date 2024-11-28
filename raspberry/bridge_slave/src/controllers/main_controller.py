@@ -34,7 +34,7 @@ class MainController:
         serial_devices = device_list["serial_devices"]
         
         serial_handlers = [
-            SerialCommunication(device["port"], device["serial_number"]) for device in serial_devices
+            SerialCommunication(device["port"], device["mc_id"]) for device in serial_devices
         ]
 
         #ble_devices = device_list["ble_devices"]

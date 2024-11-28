@@ -22,11 +22,11 @@ class MqttClient(IClient):
 	
 	def setup(self):
 		self._client.on_message = self.on_message
-		self._client.connect(os.getenv("BROKER"), int(os.getenv("PORT")), 60)
+		self._client.connect(os.getenv("MQTT_BROKER"), int(os.getenv("MQTT_PORT")), 60)
 		
 		# Iscrizione al topic per ricevere i dati
-		self._client.subscribe(os.getenv("TOPIC"))
-		print(f"In ascolto sul topic {os.getenv('TOPIC')}...")
+		self._client.subscribe(os.getenv("MQTT_TOPIC"))
+		print(f"In ascolto sul topic {os.getenv('MQTT_TOPIC')}...")
 	
 		self._client.loop_forever()
 

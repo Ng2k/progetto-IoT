@@ -5,7 +5,7 @@ Author:
 """
 from asyncio import Lock
 from typing import List
-import pyudev
+import serial.tools.list_ports
 from bleak import BleakScanner
 
 class DeviceScanner:
@@ -37,15 +37,13 @@ class DeviceScanner:
         Returns:
             list[dict]: A list of serial devices.
         """
-        context = pyudev.Context()
         return [
             {
-                "port": device.device_node,
-                "description": device.get("ID_USB_MODEL", "Unknown"),
-                "serial_number": device["ID_SERIAL_SHORT"]
+                "port": port.device,
+                "description": port.description,
+                "mc_id": port.serial_number
             }
-            for device in context.list_devices(subsystem="tty")
-            if "ID_SERIAL_SHORT" in device
+            for port in list(serial.tools.list_ports.comports())
         ]
 
     async def _scan_ble_devices(self) -> dict:
