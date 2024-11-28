@@ -4,6 +4,8 @@ services:
       context: ./bridge_slave
       dockerfile: Dockerfile
     container_name: bridge-slave
+    devices:
+      - "/dev/ttyACM0:/dev/ttyACM0"  # Map the serial port from host to container
     volumes:
       - ./bridge_slave:/app  # Monta il progetto bridge_slave
     environment:
