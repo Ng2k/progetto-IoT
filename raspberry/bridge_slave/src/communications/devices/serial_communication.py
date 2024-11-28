@@ -8,10 +8,10 @@ import json
 import asyncio
 import serial_asyncio
 
-from ..protocols.serial_protocol import SerialProtocol
-from .communication_interface import ICommunication
+from ...protocols.serial_protocol import SerialProtocol
+from .device_communication_interface import IDeviceCommunication
 
-class SerialCommunication(ICommunication):
+class SerialCommunication(IDeviceCommunication):
     """
     Asynchronous Serial Communication Handler using pyserial-asyncio
     """

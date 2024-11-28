@@ -2,3 +2,4 @@ pyserial
 bleak
 pyserial-asyncio
 pyudev
+paho-mqtt

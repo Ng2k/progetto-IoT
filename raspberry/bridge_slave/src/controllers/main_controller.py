@@ -8,8 +8,8 @@ import asyncio
 from typing import List
 
 #from ..communications.ble_communication import BLECommunication
-from ..communications.serial_communication import SerialCommunication
-from ..communications.communication_interface import ICommunication
+from ..communications.devices.serial_communication import SerialCommunication
+from ..communications.devices.device_communication_interface import IDeviceCommunication
 
 class MainController:
     """Controller of the main process"""
@@ -25,7 +25,7 @@ class MainController:
         """
         return self._device_list
 
-    async def _create_handler_list(self, device_list) -> List[ICommunication]:
+    async def _create_handler_list(self, device_list) -> List[IDeviceCommunication]:
         """Create handlers for all the devices
         
         Returns:
@@ -46,7 +46,7 @@ class MainController:
 
     async def _create_task_list(
         self,
-        device_handler_list: List[ICommunication]
+        device_handler_list: List[IDeviceCommunication]
     ) -> list:
         """Returns a list of tasks to run concurrently
         

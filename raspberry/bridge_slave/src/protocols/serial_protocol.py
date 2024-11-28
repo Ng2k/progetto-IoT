@@ -7,6 +7,8 @@ Author:
 from datetime import datetime
 import asyncio
 
+from ..communications.bridge.mqtt import MQTTCommunication
+
 class SerialProtocol(asyncio.Protocol):
     """
     Protocol for handling serial data received via pyserial-asyncio.
@@ -27,6 +29,9 @@ class SerialProtocol(asyncio.Protocol):
         }
 
         print(f"[{payload['timestamp']}] - Received data from device {payload['device_serial_number']}: {payload['people']}")
+        # todo: pubblicare dati su topic MQTT
+
+        self._mqtt = MQTTCommunication()
 
     def connection_lost(self, exc):
         print("Serial connection lost.")

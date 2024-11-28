@@ -6,7 +6,7 @@ Author:
 
 import abc
 
-class ICommunication(metaclass=abc.ABCMeta):
+class IDeviceCommunication(metaclass=abc.ABCMeta):
     """Interface for the communication classes"""
     @classmethod
     def __subclasshook__(cls, subclass: type) -> bool:
