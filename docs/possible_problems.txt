@@ -24,3 +24,8 @@ CRITICITA' PROGETTO DI IoT
 		bridge2 |	-> creazione 2.csv | -> CLOUD
 		...									
 		bridgeM |	-> creazione M.csv | -> CLOUD
+
+
+Gestione orari di eventi a più giornate:
+
+Chiedere durante la registrazione dell'evento l'orario di fine giornata per poi usare nei grafici della dashboard

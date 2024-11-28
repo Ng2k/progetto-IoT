@@ -32,6 +32,7 @@ class SerialProtocol(asyncio.Protocol):
         # todo: pubblicare dati su topic MQTT
 
         self._mqtt = MQTTCommunication()
+        self._mqtt.publish_data(payload)
 
     def connection_lost(self, exc):
         print("Serial connection lost.")

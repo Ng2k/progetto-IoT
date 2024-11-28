@@ -5,6 +5,7 @@ Author:
 """
 import configparser
 import json
+import os
 
 import paho.mqtt.client as mqtt
 
@@ -18,7 +19,9 @@ class MQTTCommunication(IBridgeCommunication):
 
 	def __init__(self):
 		self._config = configparser.ConfigParser()
-		self._config.read('config.ini')
+		current_dir = os.path.dirname(os.path.abspath(__file__))
+		config_path = os.path.join(current_dir, "config.ini")
+		self._config.read(config_path)
 		#self.pubtopic = self._config.get("MQTT","PubTopic", fallback= "sensor")
 		self.setup()
 			  
@@ -46,7 +49,7 @@ class MQTTCommunication(IBridgeCommunication):
 		topic = topic.replace("<BRIDGE_ID>", Utils.get_serial()) + "/"
 		topic = topic + data["device_serial_number"] + "/people"
 		print(topic)
-		self._clientMQTT.publish(topic, str(data))
+		self._clientMQTT.publish(topic, json.dumps(data, indent=4))
 
 	def __str__(self):
 		return json.dumps(self._config)
