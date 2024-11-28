@@ -18,7 +18,9 @@ Per avere un ambiente out-of-the-box è possibile usare `docker` usando `docker 
 
 Eseguire dal terminale il comando per avviare il container con l'ambiente virtuale python già settato e pronto all'utilizzo
 
-	$ docker-compose up --build -d
+	$ docker-compose --env-file .env.<environment> -f docker-compose.dev.yml up --build -d
+
+Il flag `--env-file` serve per passare un file di variabili di ambiente da settare nel container. Il file si deve chiamare `.env.dev` oppure `.env.prod` in base se si tratta di ambiente di sviluppo o produzione
 
 Il flag `--build` serve per ricostruire l'immagine nel caso il file `docker-compose.yml` avesse ricevuto modifiche.
 

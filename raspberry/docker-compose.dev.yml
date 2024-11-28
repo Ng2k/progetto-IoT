@@ -2,27 +2,28 @@ services:
   bridge-slave:
     build:
       context: ./bridge_slave
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: bridge-slave
     devices:
-      - "/dev/ttyACM0:/dev/ttyACM0"  # Map the serial port from host to container
+      - "/dev/ttyACM0/dev/ttyACM0"  # Map the serial port from host to container
     volumes:
       - ./bridge_slave:/app  # Monta il progetto bridge_slave
     environment:
       - PYTHONUNBUFFERED=1  # Abilita log in tempo reale
-      - ENV=development
+      - PYTHON_ENV=development
     restart: always
-    command: python -m src.index
 
   bridge-master:
     build:
       context: ./bridge_master
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: bridge-master
     volumes:
       - ./bridge_master:/app  # Monta il progetto bridge_master
     environment:
       - PYTHONUNBUFFERED=1  # Abilita log in tempo reale
-      - ENV=development
+      - PYTHON_ENV=development
+      - BROKER=${BROKER}
+      - PORT=${PORT}
+      - TOPIC=${TOPIC}
     restart: always
-    command: python -m src.index
