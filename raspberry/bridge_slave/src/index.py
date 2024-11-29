@@ -14,9 +14,9 @@ async def main():
     """Start the program"""
     log_handler = LogHandler()
 
-    device_scanner = DeviceScanner(LogHandler)
+    device_scanner = DeviceScanner(log_handler)
     devices_available = await device_scanner.scan_devices()
-    controller = MainController(devices_available, LogHandler)
+    controller = MainController(devices_available, log_handler)
 
     # Run the application
     await controller.run()

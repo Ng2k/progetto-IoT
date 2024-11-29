@@ -80,7 +80,7 @@ class LogHandler:
         )
         return handler
 
-    def _get_logger(self, subdir, filename) -> logging.Logger:
+    def get_logger(self, subdir, filename) -> logging.Logger:
         """
         Crea un handler per log con rotazione giornaliera.
 

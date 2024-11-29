@@ -15,6 +15,7 @@ services:
       - MQTT_PORT=${MQTT_PORT}
       - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
       - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
+      - LOG_DIR=${LOG_DIR}
     restart: always
 
   bridge-slave:
@@ -34,6 +35,7 @@ services:
       - MQTT_PORT=${MQTT_PORT}
       - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
       - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
+      - LOG_DIR=${LOG_DIR}
     networks:
       - mqtt-network
     depends_on:
