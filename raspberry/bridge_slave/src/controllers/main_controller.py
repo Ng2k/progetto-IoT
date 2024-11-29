@@ -3,19 +3,20 @@ Author:
 	- Nicola Guerra <nicola.guerra@outlook.com>
     - Tommaso Mortara <>
 """
-
 import asyncio
 from typing import List
 
 #from ..communications.ble_communication import BLECommunication
 from ..communications.devices.serial_communication import SerialCommunication
 from ..communications.devices.device_communication_interface import IDeviceCommunication
+from ..log_handler import LogHandler
 
 class MainController:
     """Controller of the main process"""
 
-    def __init__(self, device_list: list):
+    def __init__(self, device_list: list, log_handler: LogHandler):
         self._device_list = device_list
+        self._log_handler = log_handler
 
     def get_device_list(self) -> dict:
         """Returns all the devices currently connected

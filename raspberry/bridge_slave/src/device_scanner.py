@@ -8,10 +8,15 @@ from typing import List
 import serial.tools.list_ports
 from bleak import BleakScanner
 
+from .log_handler import LogHandler
+
 class DeviceScanner:
     """
     A class to scan and list nearby devices, both BLE and serially connected.
     """
+
+    def __init__(self, log_handler: LogHandler) -> None:
+        self._log_handler = log_handler
 
     async def scan_devices(self) -> dict:
         """
