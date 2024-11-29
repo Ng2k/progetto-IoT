@@ -7,7 +7,12 @@ import paho.mqtt.client as mqtt
 import json
 import os
 
-from dotenv import load_dotenv, dotenv_values 
+from dotenv import load_dotenv
+load_dotenv(
+    dotenv_path = (
+        "./env.prod" if os.getenv("PYTHON_ENV") == "production" else ".env.dev"
+    )
+)
 
 from .client_interface import IClient
 from ..writer.writer_interface import IWriter
@@ -15,8 +20,7 @@ from ..writer.writer_interface import IWriter
 class MqttClient(IClient):
 	"""Classe per client MQTT"""
 
-	def __init__(self, env: str, writer: IWriter):
-		load_dotenv(dotenv_path=env)
+	def __init__(self, writer: IWriter):
 		self._client = mqtt.Client()
 		self._writer = writer
 	
@@ -25,8 +29,8 @@ class MqttClient(IClient):
 		self._client.connect(os.getenv("MQTT_BROKER"), int(os.getenv("MQTT_PORT")), 60)
 		
 		# Iscrizione al topic per ricevere i dati
-		self._client.subscribe(os.getenv("MQTT_TOPIC"))
-		print(f"In ascolto sul topic {os.getenv('MQTT_TOPIC')}...")
+		self._client.subscribe(os.getenv("MQTT_SUB_TOPIC"))
+		print(f"In ascolto sul topic {os.getenv('MQTT_SUB_TOPIC')}...")
 	
 		self._client.loop_forever()
 

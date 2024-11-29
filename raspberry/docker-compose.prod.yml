@@ -13,7 +13,8 @@ services:
       - PYTHON_ENV=development
       - MQTT_BROKER=${MQTT_BROKER}
       - MQTT_PORT=${MQTT_PORT}
-      - MQTT_TOPIC=${MQTT_TOPIC}
+      - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
+      - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
     restart: always
 
   bridge-slave:
@@ -31,7 +32,8 @@ services:
       - PYTHON_ENV=development
       - MQTT_BROKER=${MQTT_BROKER}
       - MQTT_PORT=${MQTT_PORT}
-      - MQTT_TOPIC=${MQTT_TOPIC}
+      - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
+      - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
     networks:
       - mqtt-network
     depends_on:
