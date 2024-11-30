@@ -45,10 +45,11 @@ class SerialProtocol(asyncio.Protocol):
             transport: L'oggetto di trasporto associato alla connessione.
         """
         class_name = self.__class__.__name__
+        operation_id = str(uuid.uuid4())
         self._transport = transport
         self._log_handler.log_info(
             logger=Utils.Logger.APP.value,
-            log=f"{class_name} - Connessione seriale stabilita per il dispositivo {self._serial_number}."
+            log=f"{class_name} - Operazione {operation_id}: Connessione seriale stabilita per il dispositivo {self._serial_number}."
         )
 
     def data_received(self, data):
@@ -111,15 +112,16 @@ class SerialProtocol(asyncio.Protocol):
             exc: Eccezione che ha causato la perdita della connessione, se presente.
         """
         class_name = self.__class__.__name__
+        operation_id = str(uuid.uuid4())
         log_handler = self._log_handler
         if exc:
             log_handler.log_error(
                 logger=Utils.Logger.CRITICAL.value,
-                log=f"{class_name} - Connessione persa per il dispositivo {self._serial_number}",
+                log=f"{class_name} - Operazione {operation_id}: Connessione persa per il dispositivo {self._serial_number}",
                 error=str(exc)
             )
         else:
             log_handler.log_warning(
                 logger=Utils.Logger.WARNING.value,
-                log=f"{class_name} - Connessione seriale chiusa normalmente per il dispositivo {self._serial_number}."
+                log=f"{class_name} - Operazione {operation_id}: Connessione seriale chiusa normalmente per il dispositivo {self._serial_number}."
             )
