@@ -8,6 +8,7 @@
 		- [start.sh](#startsh)
 		- [docker-compose](#docker-compose)
 	- [Virtual Environment](#virtual-environment)
+- [Logs](#logs)
 	- [Authors](#authors)
 
 ## Docker
@@ -98,6 +99,27 @@ Prima di proseguire è necessario attivare l'ambiente di sviluppo
 Una volta attivato l'ambiente basterà solamente aggiornare pip (per evenienza) e proseguire con l'installazione di tutte le librerie necessarie
 
 	$ pip install --upgrade pip && pip install -r requirements.txt
+
+> ATTENZIONE
+>
+> Ricordarsi di creare un file .env per inserire le variabili di ambiente
+>
+> Esempio:
+>
+> 		# file .env situato nelle cartelle bridge-master e bridge-slave
+> 
+> 		# Configurazione mqtt
+>		MQTT_BROKER = "mqtt-broker"
+>		MQTT_PORT = 1883
+>		MQTT_KEEPALIVE = 60
+>		MQTT_SUB_TOPIC = "bridge/+/microcontroller/+/people"
+>		MQTT_PUB_TOPIC = "bridge/<BRIDGE_ID>/microcontroller"
+>
+>		# Logs
+>		LOG_DIR = "/tmp/bridge_slave/logs"
+
+# Logs
+LOG_DIR = "/tmp/app/logs"
 
 ## Authors
 
