@@ -1,12 +1,13 @@
 import os
 
+from dotenv import load_dotenv
+
 from .controllers.main_controller import MainController
 from .clients.mqtt.mqtt_client import MqttClient
 from .writer.csv_writer import CsvWriter
 from .log_handler import LogHandler
 from .clients.mqtt.mqtt_config import MqttConfig
 
-from dotenv import load_dotenv
 load_dotenv(
     dotenv_path = (
         "./env.prod" if os.getenv("PYTHON_ENV") == "production" else ".env.dev"
@@ -14,10 +15,11 @@ load_dotenv(
 )
 
 def main():
+	log_handler = LogHandler(os.getenv("LOG_DIR"))
 	csv_writer = CsvWriter(
 		file="aggregated_data.csv",
 		headers=["mc_id", "people", "timestamp"],
-		log_handler=LogHandler()
+		log_handler=log_handler
 	)
 
 	mqtt_config: MqttConfig = MqttConfig(
@@ -31,13 +33,13 @@ def main():
 	mqtt_client = MqttClient(
 		config=mqtt_config,
 		writer=csv_writer,
-		log_handler=LogHandler()
+		log_handler=log_handler
 	)
 
 	controller = MainController(
 		client=mqtt_client,
 		writer=csv_writer,
-		log_handler=LogHandler()
+		log_handler=log_handler
 	)
 
 	controller.run()

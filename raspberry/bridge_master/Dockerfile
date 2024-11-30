@@ -13,12 +13,15 @@ RUN apt-get update \
 # Crea una directory di lavoro nel container
 WORKDIR /app
 
-# Copia eventuali file necessari nella directory di lavoro
-COPY . /app
+# Copia solo i file di dipendenze per installarle e mantenere la cache
+COPY requirements.txt /app/requirements.txt
 
 ENV VIRTUAL_ENV=/opt/venv
-RUN python -m venv $VIRTUAL_ENV
+RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Copia eventuali file necessari nella directory di lavoro
+COPY . /app
 
 RUN pip3 install --upgrade pip \
     && pip3 install -r requirements.txt

@@ -1,4 +1,10 @@
+"""
+Author:
+	- Nicola Guerra <nicola.guerra@outlook.com>
+    - Tommaso Mortara <>
+"""
 from dataclasses import dataclass, field
+import json
 from ...utils import Utils
 
 @dataclass
@@ -34,3 +40,6 @@ class MqttConfig:
     def get_pub_topic(self) -> str:
         """Getter per il topic del publisher"""
         return self.pub_topic
+    
+    def __str__(self):
+        return json.dumps(self.__dict__, indent=4)

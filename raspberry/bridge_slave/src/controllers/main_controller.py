@@ -9,9 +9,11 @@ from typing import List
 
 import asyncio
 
-# from ..communications.ble_communication import BLECommunication
+from ..communications.bridge.mqtt_config import MqttConfig
+from ..communications.devices.serial_comm_config import SerialCommunicationConfig
 from ..communications.devices.serial_communication import SerialCommunication
 from ..communications.devices.device_communication_interface import IDeviceCommunication
+# from ..communications.ble_communication import BLECommunication
 from ..log_handler import LogHandler
 from ..utils import Utils
 
@@ -20,7 +22,7 @@ class MainController:
     Controllore del processo principale per la gestione dei dispositivi e dei task di comunicazione.
     """
 
-    def __init__(self, device_list: list, log_handler: LogHandler):
+    def __init__(self, device_list: list, mqtt_config: MqttConfig, log_handler: LogHandler):
         """
         Inizializza il controller principale con la lista dei dispositivi e il gestore dei log.
 
@@ -29,6 +31,7 @@ class MainController:
             log_handler (LogHandler): Oggetto per gestire la scrittura dei log.
         """
         self._device_list = device_list
+        self._mqtt_config = mqtt_config
         self._log_handler = log_handler
 
     def get_device_list(self) -> dict:
@@ -73,14 +76,18 @@ class MainController:
                 logger = Utils.Logger.APP.value,
                 log = f"{class_name} - Operazione {operation_id}: Trovati {n_of_devices} dispositivi seriali."
             )
-            
+
             serial_handlers = [
                 SerialCommunication(
-                    port = device["port"],
-                    serial_number = device["mc_id"],
-                    baudrate = 9600,
-                    log_handler = log_handler
-                ) for device in serial_devices
+                    config=SerialCommunicationConfig(
+                        port=device["port"],
+                        mc_id=device["mc_id"],
+                        baudrate=9600
+                    ),
+                    mqtt_config=self._mqtt_config,
+                    log_handler=log_handler
+                )
+                for device in serial_devices
             ]
             n_handlers = len(serial_handlers)
             

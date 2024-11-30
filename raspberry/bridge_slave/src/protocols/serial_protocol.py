@@ -5,36 +5,32 @@ Author:
 """
 import time
 import uuid
-import os
 from datetime import datetime
 
 import asyncio
-from dotenv import load_dotenv
 
 from ..communications.bridge.mqtt_config import MqttConfig
 from ..communications.bridge.mqtt import MQTTCommunication
 from ..log_handler import LogHandler
 from ..utils import Utils
 
-# Carica variabili di ambiente dal file corretto
-env_file = "./env.prod" if os.getenv("PYTHON_ENV") == "production" else "./env.dev"
-load_dotenv(dotenv_path=env_file)
-
 class SerialProtocol(asyncio.Protocol):
     """
     Protocollo per la gestione dei dati seriali ricevuti tramite pyserial-asyncio.
     """
 
-    def __init__(self, serial_number, log_handler: LogHandler):
+    def __init__(self, mc_id: str, mqtt_config: MqttConfig, log_handler: LogHandler):
         """
         Inizializza il protocollo seriale con il numero di serie del dispositivo e un gestore di log.
 
         Args:
-            serial_number (str): Numero seriale del dispositivo.
-            log_handler (LogHandler): Oggetto per gestire la scrittura dei log.
+            mc_id (str): Numero di serie del dispositivo.
+            mqtt_config (MqttConfig): Configurazioni per la connessione MQTT.
+            log_handler (LogHandler): Gestore di log per la registrazione degli eventi.
         """
         self._transport = None
-        self._serial_number = serial_number
+        self._mc_id = mc_id
+        self._mqtt_config = mqtt_config
         self._log_handler = log_handler
 
     def connection_made(self, transport):
@@ -49,7 +45,7 @@ class SerialProtocol(asyncio.Protocol):
         self._transport = transport
         self._log_handler.log_info(
             logger=Utils.Logger.APP.value,
-            log=f"{class_name} - Operazione {operation_id}: Connessione seriale stabilita per il dispositivo {self._serial_number}."
+            log=f"{class_name} - Operazione {operation_id}: Connessione seriale stabilita per il dispositivo {self._mc_id}."
         )
 
     def data_received(self, data):
@@ -63,7 +59,7 @@ class SerialProtocol(asyncio.Protocol):
         operation_id = str(uuid.uuid4())
         start_time = time.time()
         payload = {
-            "mc_id": self._serial_number,
+            "mc_id": self._mc_id,
             "people": data.decode().strip(),  # TODO: Convertire a int se necessario
             "timestamp": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
         }
@@ -75,15 +71,10 @@ class SerialProtocol(asyncio.Protocol):
                 log=f"{class_name} - Operazione {operation_id}: Dati ricevuti: {payload}"
             )
 
-            mqtt_config = MqttConfig(
-                broker=os.getenv("MQTT_BROKER"),
-                port=int(os.getenv("MQTT_PORT")),
-                keepalive=int(os.getenv("MQTT_KEEPALIVE")),
-                sub_topic=os.getenv("MQTT_SUB_TOPIC"),
-                pub_topic=os.getenv("MQTT_PUB_TOPIC"),
+            mqtt = MQTTCommunication(
+                config=self._mqtt_config,
+                log_handler=log_handler
             )
-
-            mqtt = MQTTCommunication(mqtt_config, log_handler)
             mqtt.publish_data(payload)
 
             log_handler.log_info(
@@ -117,11 +108,11 @@ class SerialProtocol(asyncio.Protocol):
         if exc:
             log_handler.log_error(
                 logger=Utils.Logger.CRITICAL.value,
-                log=f"{class_name} - Operazione {operation_id}: Connessione persa per il dispositivo {self._serial_number}",
-                error=str(exc)
+                log=f"{class_name} - Operazione {operation_id}: Connessione persa per il dispositivo {self._mc_id}",
+                error=exc
             )
         else:
             log_handler.log_debug(
                 logger=Utils.Logger.WARNING.value,
-                log=f"{class_name} - Operazione {operation_id}: Connessione seriale chiusa normalmente per il dispositivo {self._serial_number}."
+                log=f"{class_name} - Operazione {operation_id}: Connessione seriale chiusa normalmente per il dispositivo {self._mc_id}."
             )

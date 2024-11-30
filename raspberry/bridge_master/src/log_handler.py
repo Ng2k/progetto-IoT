@@ -7,16 +7,10 @@ import sys
 import tarfile
 from datetime import datetime
 
-from dotenv import load_dotenv
-load_dotenv(
-    dotenv_path = (
-        "./env.prod" if os.getenv("PYTHON_ENV") == "production" else ".env.dev"
-    )
-)
-
+from .singleton_meta import SingletonMeta
 from .utils import Utils
 
-class LogHandler:
+class LogHandler(metaclass=SingletonMeta):
     """
     Gestisce una struttura organizzata di log per un'applicazione.
 
@@ -36,28 +30,13 @@ class LogHandler:
     Supporta logging giornaliero, rotazione automatica e backup dei log.
     """
     
-    _instance = None  # Variabile di classe per memorizzare l'istanza Singleton
-
-    def __new__(cls, *args, **kwargs):
-        """
-        Gestisce la creazione dell'istanza Singleton.
-        """
-        if not cls._instance:
-            cls._instance = super(LogHandler, cls).__new__(cls, *args, **kwargs)
-            cls._instance.__init__(*args, **kwargs)  # Inizializza solo la prima volta
-        return cls._instance
-
-    def __init__(self):
-        """
-        Inizializza la struttura delle directory di logging.
-        """
-        if not hasattr(self, '_initialized'):  # Verifica se è stato già inizializzato
-            self._BASE_LOG_DIR = os.getenv("LOG_DIR")
-            self._create_log_directories()
-            self._loggers = self._setup_loggers()
-            self._log_system_info()
-            self._log_library_versions()
-            self._initialized = True  # Imposta l'attributo per evitare rinizializzazione
+    def __init__(self, log_dir: str) -> None:
+        self._BASE_DIR = log_dir
+        self._BASE_LOG_DIR = log_dir
+        self._create_log_directories()
+        self._loggers = self._setup_loggers()
+        self._log_system_info()
+        self._log_library_versions()
 
     def get_loggers(self) -> dict:
         """
