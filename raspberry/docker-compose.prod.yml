@@ -3,6 +3,8 @@ services:
     build:
       context: ./bridge_master
       dockerfile: Dockerfile.prod
+      cache_from:
+        - bridge-master-cache:latest
     container_name: bridge-master
     networks:
       - mqtt-network
@@ -17,17 +19,23 @@ services:
       - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
       - LOG_DIR=${LOG_DIR}
     restart: always
+    volumes:
+      - ./bridge_master:/app  # Monta il codice sorgente
+      - logs-volume:/app/logs
 
   bridge-slave:
     build:
       context: ./bridge_slave
       dockerfile: Dockerfile.prod
+      cache_from:
+        - bridge-slave-cache:latest
     container_name: bridge-slave
     devices:
       - "/dev/ttyACM0:/dev/ttyACM0"  # Montiamo il dispositivo seriale dall'host
     volumes:
       - "/dev:/dev"
       - ./bridge_slave:/app  # Monta il progetto bridge_slave
+      - logs-volume:/app/logs  # Volume per i log
     environment:
       - PYTHONUNBUFFERED=1  # Abilita log in tempo reale
       - PYTHON_ENV=development
@@ -60,3 +68,4 @@ networks:
 volumes:
   mosquitto-data:
     driver: local
+  logs-volume:

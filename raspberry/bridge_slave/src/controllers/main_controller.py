@@ -13,6 +13,7 @@ import asyncio
 from ..communications.devices.serial_communication import SerialCommunication
 from ..communications.devices.device_communication_interface import IDeviceCommunication
 from ..log_handler import LogHandler
+from ..utils import Utils
 
 class MainController:
     """
@@ -39,7 +40,7 @@ class MainController:
         """
         class_name = self.__class__.__name__
         self._log_handler.log_info(
-            logger = "app_logger",
+            logger = Utils.Logger.APP.value,
             log = f"{class_name} - Richiesta della lista dispositivi."
         )
         return self._device_list
@@ -59,7 +60,7 @@ class MainController:
 
         log_handler = self._log_handler
         log_handler.log_info(
-            logger = "app_logger",
+            logger = Utils.Logger.APP.value,
             log = f"{class_name} - Operazione {operation_id}: Inizio creazione lista gestori."
         )
 
@@ -69,7 +70,7 @@ class MainController:
             n_of_devices = len(serial_devices)
 
             log_handler.log_info(
-                logger = "app_logger",
+                logger = Utils.Logger.APP.value,
                 log = f"{class_name} - Operazione {operation_id}: Trovati {n_of_devices} dispositivi seriali."
             )
             
@@ -88,21 +89,21 @@ class MainController:
             # ble_handlers = [BLECommunication(device["address"]) for device in ble_devices]
             
             log_handler.log_info(
-                logger = "app_logger",
+                logger = Utils.Logger.APP.value,
                 log = f"{class_name} - Operazione {operation_id}: Creati {n_handlers} gestori seriali."
             )
 
             end_time = time.time()
             duration = end_time - start_time
             log_handler.log_info(
-                logger = "performance_logger",
+                logger = Utils.Logger.PERFORMANCE.value,
                 log = f"{class_name} - Operazione {operation_id}: Tempo per creare i gestori: {duration:.2f} secondi."
             )
 
             return serial_handlers # + ble_handlers
         except Exception as e:
             log_handler.log_error(
-                logger = "critical_logger",
+                logger = Utils.Logger.CRITICAL.value,
                 log = f"{class_name} - Operazione {operation_id}: Errore nella creazione della lista gestori.",
                 error = e
             )
@@ -127,7 +128,7 @@ class MainController:
 
         log_handler = self._log_handler
         log_handler.log_info(
-            logger = "app_logger",
+            logger = Utils.Logger.APP.value,
             log = f"{class_name} - Operazione {operation_id}: Inizio creazione lista task."
         )
 
@@ -135,21 +136,21 @@ class MainController:
         try:
             task_list = [handler.read_data() for handler in device_handler_list]
             log_handler.log_info(
-                logger = "app_logger",
+                logger = Utils.Logger.APP.value,
                 log = f"{class_name} - Operazione {operation_id}: Creati {len(task_list)} task per esecuzione concorrente."
             )
 
             end_time = time.time()
             duration = end_time - start_time
             log_handler.log_info(
-                logger = "performance_logger",
+                logger = Utils.Logger.PERFORMANCE.value,
                 log = f"{class_name} - Operazione {operation_id}: Tempo per creare i task: {duration:.2f} secondi."
             )
 
             return task_list
         except Exception as e:
             log_handler.log_error(
-                logger = "critical_logger",
+                logger = Utils.Logger.CRITICAL.value,
                 log = f"{class_name} - Operazione {operation_id}: Errore nella creazione della lista dei task.",
                 error = e
             )
@@ -167,7 +168,7 @@ class MainController:
 
         log_handler = self._log_handler
         log_handler.log_info(
-            logger = "app_logger",
+            logger = Utils.Logger.APP.value,
             log = f"{class_name} - Operazione {operation_id}: Inizio processo principale."
         )
 
@@ -178,12 +179,12 @@ class MainController:
             await asyncio.gather(*task_list)
 
             log_handler.log_info(
-                logger = "app_logger",
+                logger = Utils.Logger.APP.value,
                 log = f"{class_name} - Operazione {operation_id}: Tutti i task completati con successo."
             )
         except Exception as e:
             log_handler.log_error(
-                logger = "critical_logger",
+                logger = Utils.Logger.CRITICAL.value,
                 log = f"{class_name} - Operazione {operation_id}: Errore durante il processo principale.",
                 error = e
             )
@@ -191,6 +192,6 @@ class MainController:
             end_time = time.time()
             duration = end_time - start_time
             log_handler.log_info(
-                logger = "performance_logger",
+                logger = Utils.Logger.PERFORMANCE.value,
                 log = f"{class_name} - Operazione {operation_id}: Tempo totale esecuzione: {duration:.2f} secondi."
             )

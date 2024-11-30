@@ -4,6 +4,8 @@ Author:
 	- Tommaso Mortara <>
 """
 
+from enum import Enum
+
 class Utils():
 	"""Classe con funzione utility"""
 	@staticmethod
@@ -20,3 +22,13 @@ class Utils():
 			cpuserial = "ERROR000000000"
 
 		return cpuserial
+	
+	class Logger(Enum):
+		"""
+		Enumerazione dei logger disponibili.
+		"""
+		APP = "app_logger"
+		CRITICAL = "critical_logger"
+		WARNING = "warning_logger"
+		PERFORMANCE = "performance_logger"
+		METRICS = "metrics_logger"

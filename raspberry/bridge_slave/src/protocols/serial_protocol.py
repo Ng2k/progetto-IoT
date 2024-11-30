@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from ..communications.bridge.mqtt_config import MqttConfig
 from ..communications.bridge.mqtt import MQTTCommunication
 from ..log_handler import LogHandler
+from ..utils import Utils
 
 # Carica variabili di ambiente dal file corretto
 env_file = "./env.prod" if os.getenv("PYTHON_ENV") == "production" else "./env.dev"
@@ -46,7 +47,7 @@ class SerialProtocol(asyncio.Protocol):
         class_name = self.__class__.__name__
         self._transport = transport
         self._log_handler.log_info(
-            logger="app_logger",
+            logger=Utils.Logger.APP.value,
             log=f"{class_name} - Connessione seriale stabilita per il dispositivo {self._serial_number}."
         )
 
@@ -69,7 +70,7 @@ class SerialProtocol(asyncio.Protocol):
         log_handler = self._log_handler
         try:
             log_handler.log_info(
-                logger="app_logger",
+                logger=Utils.Logger.APP.value,
                 log=f"{class_name} - Operazione {operation_id}: Dati ricevuti: {payload}"
             )
 
@@ -81,16 +82,16 @@ class SerialProtocol(asyncio.Protocol):
                 pub_topic=os.getenv("MQTT_PUB_TOPIC"),
             )
 
-            mqtt = MQTTCommunication(mqtt_config)
+            mqtt = MQTTCommunication(mqtt_config, log_handler)
             mqtt.publish_data(payload)
 
             log_handler.log_info(
-                logger="app_logger",
+                logger=Utils.Logger.APP.value,
                 log=f"{class_name} - Operazione {operation_id}: Payload pubblicato su MQTT."
             )
         except Exception as e:
             log_handler.log_error(
-                logger="critical_logger",
+                logger=Utils.Logger.CRITICAL.value,
                 log=f"{class_name} - Operazione {operation_id}: Errore durante la gestione dei dati ricevuti",
                 error=e
             )
@@ -98,7 +99,7 @@ class SerialProtocol(asyncio.Protocol):
             end_time = time.time()
             duration = end_time - start_time
             log_handler.log_info(
-                logger="performance_logger",
+                logger=Utils.Logger.PERFORMANCE.value,
                 log=f"{class_name} - Operazione {operation_id}: Tempo di elaborazione: {duration:.2f} secondi."
             )
 
@@ -113,12 +114,12 @@ class SerialProtocol(asyncio.Protocol):
         log_handler = self._log_handler
         if exc:
             log_handler.log_error(
-                logger="critical_logger",
+                logger=Utils.Logger.CRITICAL.value,
                 log=f"{class_name} - Connessione persa per il dispositivo {self._serial_number}",
                 error=str(exc)
             )
         else:
             log_handler.log_warning(
-                logger="warning_logger",
+                logger=Utils.Logger.WARNING.value,
                 log=f"{class_name} - Connessione seriale chiusa normalmente per il dispositivo {self._serial_number}."
             )

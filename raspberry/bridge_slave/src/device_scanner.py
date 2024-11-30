@@ -12,6 +12,7 @@ import serial.tools.list_ports
 from bleak import BleakScanner
 
 from .log_handler import LogHandler
+from .utils import Utils
 
 class DeviceScanner:
     """
@@ -38,7 +39,7 @@ class DeviceScanner:
 
         try:
             self._logger_handler.log_info(
-                logger = "app_logger",
+                logger = Utils.Logger.APP.value,
                 log = f"{class_name} - Operazione {operation_id}: Avvio scansione dispositivi."
             )
             serial_devices = await self._scan_serial_devices()
@@ -48,7 +49,7 @@ class DeviceScanner:
             duration = end_time - start_time
 
             self._logger_handler.log_info(
-                logger = "performance_logger",
+                logger = Utils.Logger.PERFORMANCE.value,
                 log = f"{class_name} - Operazione {operation_id}: Scansione dispositivi completata in {duration:.2f} secondi."
             )
 
@@ -58,7 +59,7 @@ class DeviceScanner:
             }
         except Exception as e:
             self._logger_handler.log_error(
-                logger = "critical_logger",
+                logger = Utils.Logger.CRITICAL.value,
                 log = f"{class_name} - Operazione {operation_id}: Errore durante la scansione",
                 error = e
             )
@@ -83,14 +84,14 @@ class DeviceScanner:
             end_time = time.time()
             duration = end_time - start_time
             self._logger_handler.log_debug(
-                logger = "performance_logger",
+                logger = Utils.Logger.PERFORMANCE.value,
                 log = f"{class_name} - Operazione {operation_id}: Trovati {n_devices} dispositivi seriali in {duration:.2f} secondi."
             )
 
             return devices
         except Exception as e:
             self._logger_handler.log_error(
-                logger = "critical_logger",
+                logger = Utils.Logger.CRITICAL.value,
                 log = f"{class_name} - Operazione {operation_id}: Errore durante la scansione dei dispositivi seriali",
                 error = e
             )
@@ -131,7 +132,7 @@ class DeviceScanner:
                 ble_result = self._process_ble_devices(ble_devices)
         except Exception as e:
             self._logger_handler.log_error(
-                logger = "critical_logger",
+                logger = Utils.Logger.CRITICAL.value,
                 log = f"{class_name} - Operazione {operation_id}: Errore durante la scansione dei dispositivi BLE",
                 error = e
             )
@@ -141,7 +142,7 @@ class DeviceScanner:
             duration = end_time - start_time
 
             self._logger_handler.log_debug(
-                logger = "performance_logger",
+                logger = Utils.Logger.PERFORMANCE.value,
                 log = f"{class_name} - Operazione {operation_id}: Trovati {len(ble_devices)} dispositivi BLE in {duration:.2f} secondi."
             )
             return ble_result

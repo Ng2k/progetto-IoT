@@ -19,6 +19,8 @@ load_dotenv(
     )
 )
 
+from .utils import Utils
+
 class LogHandler:
     """
     Gestisce una struttura organizzata di log per un'applicazione.
@@ -123,13 +125,17 @@ class LogHandler:
             dict: Un dizionario con i logger configurati
         """
         log_date = datetime.now().strftime('%Y-%m-%d')
-
+        app_logger = self._get_logger(subdir="app", filename=f"{log_date}.log")
+        critical_logger = self._get_logger(subdir="errors/critical", filename=f"{log_date}.log")
+        warning_logger = self._get_logger(subdir="errors/warnings", filename=f"{log_date}.log")
+        performance_logger = self._get_logger(subdir="performance", filename=f"{log_date}.log")
+        metrics_logger = self._get_logger(subdir="metrics", filename=f"{log_date}.log")
         return {
-            "app_logger": self._get_logger(subdir="app", filename=f"{log_date}.log"),
-            "critical_logger": self._get_logger(subdir="errors/critical", filename=f"{log_date}.log"),
-            "warning_logger": self._get_logger(subdir="errors/warnings", filename=f"{log_date}.log"),
-            "performance_logger": self._get_logger(subdir="performance", filename=f"{log_date}.log"),
-            "metrics_logger": self._get_logger(subdir="metrics", filename=f"{log_date}.log")
+            Utils.Logger.APP.value: app_logger,
+            Utils.Logger.CRITICAL.value: critical_logger,
+            Utils.Logger.WARNING.value: warning_logger,
+            Utils.Logger.PERFORMANCE.value: performance_logger,
+            Utils.Logger.METRICS.value: metrics_logger
         }
     
     def _log_system_info(self) -> None:
@@ -140,7 +146,7 @@ class LogHandler:
         try:
             self._log_system_info()
         except Exception as e:
-            critical_logger = self._loggers["critical_logger"]
+            critical_logger = self._loggers[Utils.Logger.CRITICAL.value]
             log = f"{class_name} - Errore nel registrare le informazioni ambientali: {str(e)}"
             critical_logger.error(log)
 
@@ -150,7 +156,7 @@ class LogHandler:
         il programma.
         """
         class_name = self.__class__.__name__
-        app_logger = self._loggers["app_logger"]
+        app_logger = self._loggers[Utils.Logger.APP.value]
         app_logger.info(f"{class_name} - Info sistema: {platform.system()} {platform.release()} {platform.version()}")
         app_logger.info(f"{class_name} - Versione Python: {sys.version}")
         app_logger.info(f"{class_name} - Architettura: {platform.machine()}")
@@ -186,9 +192,9 @@ class LogHandler:
         try:
             library = importlib.import_module(library_name)
             version = getattr(library, "__version__", "Sconosciuta")
-            self._loggers["app_logger"].info(f"{library_name} versione: {version}")
+            self._loggers[Utils.Logger.APP.value].info(f"{library_name} versione: {version}")
         except Exception as e:
-            self._loggers["warning_logger"].warning(f"{class_name} - Impossibile ottenere la versione di {library_name}: {str(e)}")
+            self._loggers[Utils.Logger.WARNING.value].warning(f"{class_name} - Impossibile ottenere la versione di {library_name}: {str(e)}")
 
     def _list_installed_libraries(self, requirements_file="requirements.txt") -> list:
         """
@@ -201,7 +207,7 @@ class LogHandler:
             list: Lista delle librerie installate.
         """
         if not os.path.exists(requirements_file):
-            warning_logger = self._loggers["warning_logger"]
+            warning_logger = self._loggers[Utils.Logger.WARNING.value]
             warning_logger.warning(f"{self.__class__.__name__} - Il file {requirements_file} non esiste.")
             return []
 

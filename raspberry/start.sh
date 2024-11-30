@@ -17,9 +17,9 @@ add_docker_user_to_dialout() {
 # Esegue docker-compose usando file di environment in base all'input dell'utente
 exec_docker_compose() {
 	if [ "$ENV" = "prod" ]; then
-		docker-compose --env-file .env.prod -f docker-compose.prod.yml up --build -d
+		export DOCKER_BUILDKIT=1 && docker-compose --env-file .env.prod -f docker-compose.prod.yml up --no-build -d
 	else
-		docker-compose --env-file .env.dev -f docker-compose.dev.yml up --build -d
+		export DOCKER_BUILDKIT=1 && docker-compose --env-file .env.dev -f docker-compose.dev.yml up --no-build -d
 	fi
 	echo "Container avviati con successo."
 }

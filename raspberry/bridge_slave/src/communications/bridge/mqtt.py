@@ -10,6 +10,7 @@ import paho.mqtt.client as mqtt
 from .bridge_communication_interface import IBridgeCommunication
 from .mqtt_config import MqttConfig
 from ...log_handler import LogHandler
+from ...utils import Utils
 
 class MQTTCommunication(IBridgeCommunication):
 	"""
@@ -26,8 +27,8 @@ class MQTTCommunication(IBridgeCommunication):
 	def setup(self):
 		class_name = self.__class__.__name__
 		self._log_handler.log_info(
-			logger="app_logger",
-			message=f"{class_name} - Inizializzazione connessione con il broker MQTT"
+			logger=Utils.Logger.APP.value,
+			log=f"{class_name} - Inizializzazione connessione con il broker MQTT"
 		)
 		try:
 			self._clientMQTT = mqtt.Client()
@@ -38,18 +39,18 @@ class MQTTCommunication(IBridgeCommunication):
 			)
 		except Exception as e:
 			self._log_handler.log_error(
-				logger="critical_logger",
-				message=f"{class_name} - Errore durante la connessione con il broker MQTT",
+				logger=Utils.Logger.CRITICAL.value,
+				log=f"{class_name} - Errore durante la connessione con il broker MQTT",
 				error=e
 			)
 		finally:
 			self._log_handler.log_info(
-				logger="app_logger",
-				message=f"{class_name} - Connessione con il broker MQTT effettuata con successo"
+				logger=Utils.Logger.APP.value,
+				log=f"{class_name} - Connessione con il broker MQTT effettuata con successo"
 			)
 			self._log_handler.log_info(
-				logger="app_logger",
-				message=f"{class_name} - Avvio del loop per la ricezione dei messaggi MQTT"
+				logger=Utils.Logger.APP.value,
+				log=f"{class_name} - Avvio del loop per la ricezione dei messaggi MQTT"
 			)
 			self._clientMQTT.loop_start()
 
@@ -60,8 +61,8 @@ class MQTTCommunication(IBridgeCommunication):
 		mc_id = data.get("mc_id", "")
 		try:
 			self._log_handler.log_info(
-				logger="app_logger",
-				message=f"{class_name} - Invio dati al topic {pub_topic}/{mc_id}/people"
+				logger=Utils.Logger.APP.value,
+				log=f"{class_name} - Invio dati al topic {pub_topic}/{mc_id}/people"
 			)
 			self._clientMQTT.publish(
 				topic = f"{pub_topic}/{mc_id}/people",
@@ -69,14 +70,14 @@ class MQTTCommunication(IBridgeCommunication):
 			)
 		except Exception as e:
 			self._log_handler.log_error(
-				logger="critical_logger",
-				message=f"{class_name} - Errore durante l'invio dei dati al topic {pub_topic}/{mc_id}/people",
+				logger=Utils.Logger.CRITICAL.value,
+				log=f"{class_name} - Errore durante l'invio dei dati al topic {pub_topic}/{mc_id}/people",
 				error=e
 			)
 		finally:
 			self._log_handler.log_info(
-				logger="app_logger",
-				message=f"{class_name} - Dati inviati con successo al topic {pub_topic}/{mc_id}/people"
+				logger=Utils.Logger.APP.value,
+				log=f"{class_name} - Dati inviati con successo al topic {pub_topic}/{mc_id}/people"
 			)
 
 	def __str__(self):
