@@ -7,7 +7,6 @@ RUN apt-get update \
        python3 \
        python3-pip \
        python3-venv \
-    && apt-get install mosquitto mosquitto-clients -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -18,15 +17,22 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1 \
 # Crea una directory di lavoro nel container
 WORKDIR /app
 
+# Copia solo i file di dipendenze per installarle e mantenere la cache
+COPY requirements.txt /app/requirements.txt
+RUN python -m venv /opt/venv \
+    && /opt/venv/bin/pip install --upgrade pip \
+    && /opt/venv/bin/pip install -r /app/requirements.txt
+
 # Copia eventuali file necessari nella directory di lavoro
 COPY . /app
 
+# Configura l'ambiente virtuale
 ENV VIRTUAL_ENV=/opt/venv
 RUN python -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+RUN pip3 install --upgrade pip \
+    && pip3 install -r requirements.txt
 
 # Comando di avvio del container
-CMD ["python", "-m", "src.index"]
+CMD ["python3", "-m", "src.index"]

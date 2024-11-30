@@ -12,11 +12,9 @@ from .controllers.main_controller import MainController
 
 async def main():
     """Start the program"""
-    log_handler = LogHandler()
-
-    device_scanner = DeviceScanner(log_handler)
+    device_scanner = DeviceScanner(LogHandler())
     devices_available = await device_scanner.scan_devices()
-    controller = MainController(devices_available, log_handler)
+    controller = MainController(devices_available, LogHandler())
 
     # Run the application
     await controller.run()

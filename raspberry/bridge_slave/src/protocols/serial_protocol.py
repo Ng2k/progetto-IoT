@@ -121,7 +121,7 @@ class SerialProtocol(asyncio.Protocol):
                 error=str(exc)
             )
         else:
-            log_handler.log_warning(
+            log_handler.log_debug(
                 logger=Utils.Logger.WARNING.value,
                 log=f"{class_name} - Operazione {operation_id}: Connessione seriale chiusa normalmente per il dispositivo {self._serial_number}."
             )

@@ -5,6 +5,7 @@ Author:
 """
 
 from enum import Enum
+import time
 
 class Utils():
 	"""Classe con funzione utility"""
@@ -22,6 +23,17 @@ class Utils():
 			cpuserial = "ERROR000000000"
 
 		return cpuserial
+	
+	def compute_duration_time(start_time: float) -> float:
+		"""Calcola il tempo trascorso dall'inizio dell'operazione
+		
+		Args:
+			start_time (float): Tempo di inizio dell'operazione
+		
+		Returns:
+			float: Tempo trascorso dall'inizio dell'operazione
+		"""
+		return time.time() - start_time
 	
 	class Logger(Enum):
 		"""

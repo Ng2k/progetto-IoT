@@ -2,7 +2,7 @@ services:
   bridge-master:
     build:
       context: ./bridge_master
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       cache_from:
         - bridge-master-cache:latest
     container_name: bridge-master
@@ -21,12 +21,12 @@ services:
     restart: always
     volumes:
       - ./bridge_master:/app  # Monta il codice sorgente
-      - logs-volume:/app/logs
+      - logs-volume-master:/app/logs
 
   bridge-slave:
     build:
       context: ./bridge_slave
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       cache_from:
         - bridge-slave-cache:latest
     container_name: bridge-slave
@@ -35,7 +35,7 @@ services:
     volumes:
       - "/dev:/dev"
       - ./bridge_slave:/app  # Monta il progetto bridge_slave
-      - logs-volume:/app/logs  # Volume per i log
+      - logs-volume-slave:/app/logs  # Volume per i log
     environment:
       - PYTHONUNBUFFERED=1  # Abilita log in tempo reale
       - PYTHON_ENV=development
@@ -68,4 +68,5 @@ networks:
 volumes:
   mosquitto-data:
     driver: local
-  logs-volume:
+  logs-volume-slave:
+  logs-volume-master:

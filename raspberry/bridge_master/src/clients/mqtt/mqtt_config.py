@@ -1,3 +1,8 @@
+"""
+Author:
+	- Nicola Guerra <nicola.guerra@outlook.com>
+	- Tommaso Mortara <>
+"""
 from dataclasses import dataclass, field
 from ...utils import Utils
 

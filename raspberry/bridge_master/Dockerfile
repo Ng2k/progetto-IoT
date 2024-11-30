@@ -7,13 +7,8 @@ RUN apt-get update \
        python3 \
        python3-pip \
        python3-venv \
-    && apt-get install mosquitto mosquitto-clients -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-# Imposta Python 3 come predefinito per il comando "python"
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1 \
-    && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
 
 # Crea una directory di lavoro nel container
 WORKDIR /app
@@ -25,8 +20,8 @@ ENV VIRTUAL_ENV=/opt/venv
 RUN python -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+RUN pip3 install --upgrade pip \
+    && pip3 install -r requirements.txt
 
 # Comando di avvio del container
-CMD ["python", "-m", "src.index"]
+CMD ["python3", "-m", "src.index"]
