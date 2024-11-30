@@ -235,17 +235,11 @@ class LogHandler:
             log (str): Messaggio di log.
             error (Exception): errore
         """
-        self._loggers[logger].error(f"{log} - {str(error)}")
-
-    def log_warning(self, logger: str, log: str) -> None:
-        """
-        Logga un messaggio di tipo warning.
-
-        Params:
-            logger: logger da utilizzare
-            log (str): Messaggio di log.
-        """
-        self._loggers[logger].warning(log)
+        msg = f"{log} - {str(error)}"
+        if logger == Utils.Logger.CRITICAL.value:
+            self._loggers[logger].error(msg)
+        else:
+            self._loggers[logger].warning(msg)
 
     def log_debug(self, logger: str, log: str) -> None:
         """

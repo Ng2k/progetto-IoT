@@ -64,7 +64,8 @@ class SerialCommunication(IDeviceCommunication):
         except Exception as e:
             self._log_handler.log_error(
                 logger=Utils.Logger.CRITICAL.value,
-                log=f"{class_name} - Operazione {operation_id}: Errore durante la creazione della connessione seriale: {str(e)}"
+                log=f"{class_name} - Operazione {operation_id}: Errore durante la creazione della connessione seriale",
+                error=e
             )
 
     def __str__(self):
