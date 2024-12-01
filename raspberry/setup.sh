@@ -1,75 +1,60 @@
 #!/bin/bash
 
+source ./shell/colors.sh
+source ./shell/logger.sh
+source ./shell/permissions.sh
+source ./shell/docker.sh
+
 # Settaggio dell'ambiente (default: 'dev')
 ENV=${1:-dev}
-
-# Interrompe lo script in caso di errori
-set -e
 
 # Controlla se lo script viene eseguito come root
 check_root() {
 	if [ "$EUID" -ne 0 ]; then
-		echo "Questo script deve essere eseguito come root." >&2
+		log_with_timestamp "$(write_error "Questo script deve essere eseguito come root.")"
 		exit 1
 	fi
 }
 
-# Installa Docker se non già presente
-install_docker() {
-	if ! command -v docker &> /dev/null; then
-		echo "Installazione di Docker..."
-		apt-get update
-		apt-get install -y \
-			apt-transport-https \
-			ca-certificates \
-			curl \
-			software-properties-common
+# Aggiorna il sistema operativo
+update_system() {
+	start_time=$(date +%s%3N) # Tempo iniziale in millisecondi
 
-		curl -sSL https://get.docker.com | sh
-		sudo usermod -aG docker ${USER}
-		echo "Docker installato con successo."
-	else
-		echo "Docker è già installato."
+	log_with_timestamp "$(write_task "Aggiornamento del sistema operativo.")"
+	log_with_timestamp "	|-> $(write_command "sudo apt-get update")"
+	log_with_timestamp "	|	|-> $(write_description "Aggiorna la lista dei pacchetti disponibili")"
+	sudo apt-get update 2> /tmp/apt-errors.log
+	error_code=$?
+	if [ $error_code -ne 0 ]; then
+		log_with_timestamp "$(write_error "Errore durante lo scaricamento degli aggiornamenti. Controlla il file /tmp/apt-errors.log.")"
+		exit 1
 	fi
-}
 
-# Installa Docker Compose se non già presente
-install_docker_compose() {
-	if ! command -v docker-compose &> /dev/null; then
-		echo "Installazione di Docker Compose..."
-		sudo apt install -y docker-compose
-		sudo systemctl enable docker
-		echo "Docker Compose installato con successo."
-	else
-		echo "Docker Compose è già installato."
+
+	log_with_timestamp "	|"
+	log_with_timestamp "	|-> $(write_command "sudo apt-get upgrade -y")"
+	log_with_timestamp "	|	|-> $(write_description "Aggiorna i pacchetti installati")"
+	sudo apt-get upgrade -y "> /tmp/apt-errors.log"
+	error_code=$?
+	if [ $error_code -ne 0 ]; then
+		log_with_timestamp "$(write_error "Errore durante l'installazione degli aggiornamenti. Controlla il file /tmp/apt-errors.log.")"
+		exit 1
 	fi
-}
 
-# Configura i permessi per accedere alla porta seriale del microcontrollore
-add_docker_user_to_dialout() {
-	echo "Configurazione dei permessi per la porta seriale..."
-	sudo usermod -aG dialout $USER
-	sudo chmod 666 /dev/ttyACM0
-	echo "Permessi configurati con successo."
-}
-
-# Avvia i container Docker
-start_containers() {
-	echo "Avvio dei container..."
-	cd ~/Desktop/progetto-IoT/raspberry || { echo "Directory non trovata: ~/Desktop/progetto-IoT/raspberry"; exit 1; }
-	echo "	-> Ambiente selezionato: $ENV"
-	echo "	-> Comando eseguito: export DOCKER_BUILDKIT=1 && docker-compose --env-file .env.$ENV -f docker-compose.yml up --no-build -d"
-	export DOCKER_BUILDKIT=1 && docker-compose --env-file .env.$ENV -f docker-compose.yml up --no-build -d
-	echo "Container avviati con successo."
+	end_time=$(date +%s%3N)   # Tempo finale in millisecondi
+	elapsed_time_ms=$((end_time - start_time))
+	elapsed_time=$(echo "scale=3; $elapsed_time_ms / 1000" | bc)
+	log_with_timestamp "$(write_success "- ${elapsed_time}s - Sistema operativo aggiornato con successo.")"
 }
 
 # Main script
 main() {
-	check_root      # Controlla se lo script è eseguito come root
-	install_docker  # Installa Docker se necessario
-	install_docker_compose  # Installa Docker Compose se necessario
-	add_docker_user_to_dialout  # Configura i permessi per la porta seriale
-	start_containers  # Avvia i container Docker
+	check_root      			# Controlla se lo script è eseguito come root
+	update_system   			# Aggiorna il sistema operativo			
+	install_docker  			# Installa Docker se necessario
+	install_docker_compose  	# Installa Docker Compose se necessario
+	setup_permissions			# Configura i permessi per la porta seriale
+	exec_docker_compose			# Avvia i container Docker
 }
 
 main
