@@ -8,7 +8,7 @@
 		- [start.sh](#startsh)
 		- [docker-compose](#docker-compose)
 	- [Virtual Environment](#virtual-environment)
-- [Logs](#logs)
+	- [Logs](#logs)
 	- [Authors](#authors)
 
 ## Docker
@@ -20,11 +20,11 @@ Prima di poter eseguire il programma è necessario impostare l'ambiente virtuale
 Esegui il file `setup.sh` per installare docker e docker-compose, impostare i permessi per far accedere alla porta seriale ed eseguire i container
 
 	$ chmod +x setup.sh
-	$ ./setup.sh [dev/prod]
+	$ ./setup.sh [default=dev]
 
 > ATTENZIONE
 >
-> Quando esegui il file bash ricordati di inserire in input anche il tipo di environment desiderato, in questo modo verranno caricate le configurazioni giuste
+> Quando esegui il file bash ricordati di inserire in input anche il tipo di environment desiderato, in questo modo verranno caricate le configurazioni giuste. Il valore di default è "dev"
 >
 > 	*Esempio*
 >
@@ -36,11 +36,11 @@ Esegui il file `setup.sh` per installare docker e docker-compose, impostare i pe
 Nel caso avessi già docker e docker-compose installato, allora sarà necessario solamente eseguire il file `start.sh`, il programma aggiungerà i permessi per l'accesso alla porta seriale e eseguirà i container
 
 	$ chmod +x start.sh
-	$ ./start.sh [dev/prod]
+	$ ./start.sh [default=dev]
 
 > ATTENZIONE
 >
-> Quando esegui il file bash ricordati di inserire in input anche il tipo di environment desiderato, in questo modo verranno caricate le configurazioni giuste
+> Quando esegui il file bash ricordati di inserire in input anche il tipo di environment desiderato, in questo modo verranno caricate le configurazioni giuste. Il valore di default è "dev"
 >
 > 	*Esempio*
 >
@@ -53,17 +53,21 @@ Per avere un ambiente out-of-the-box è possibile usare `docker` usando `docker 
 
 Eseguire dal terminale il comando per avviare il container con l'ambiente virtuale python già settato e pronto all'utilizzo
 
-	$ docker-compose --env-file .env.[dev|prod] -f docker-compose.[dev|prod].yml up --build -d
+	$ export DOCKER_BUILDKIT=1
+	$ docker-compose --env-file .env.[dev|prod] -f docker-compose.yml up --no-build -d
 
 Esempio:
 
-	$ docker-compose --env-file .env.dev -f docker-compose.dev.yml up --build -d
+	$ export DOCKER_BUILDKIT=1
+	$ docker-compose --env-file .env.dev -f docker-compose.yml up --no-build -d
+
+Il comando `export DOCKER_BUILDKIT=1` serve per indicare a docker di usare il build kit e la cache
 
 Il flag `--env-file` serve per passare un file di variabili di ambiente da settare nel container. Il file si deve chiamare `.env.dev` oppure `.env.prod` in base se si tratta di ambiente di sviluppo o produzione
 
-il flag `-f` serve per poter usare un file `docker-compose.[dev|prod].yml` specifico in base all'ambiente dove lo si vuole eseguire
+il flag `-f` serve per poter usare un file `docker-compose.yml` custom
 
-Il flag `--build` serve per ricostruire l'immagine nel caso il file `docker-compose.yml` avesse ricevuto modifiche.
+Il flag `--no-build` serve per ricostruire evitare il build del container ad ogni utilizzo.
 
 Il flag `-d` serve per far eseguire il container in background
 
@@ -100,26 +104,50 @@ Una volta attivato l'ambiente basterà solamente aggiornare pip (per evenienza) 
 
 	$ pip install --upgrade pip && pip install -r requirements.txt
 
-> ATTENZIONE
->
-> Ricordarsi di creare un file .env per inserire le variabili di ambiente
->
-> Esempio:
->
-> 		# file .env situato nelle cartelle bridge-master e bridge-slave
-> 
-> 		# Configurazione mqtt
->		MQTT_BROKER = "mqtt-broker"
->		MQTT_PORT = 1883
->		MQTT_KEEPALIVE = 60
->		MQTT_SUB_TOPIC = "bridge/+/microcontroller/+/people"
->		MQTT_PUB_TOPIC = "bridge/<BRIDGE_ID>/microcontroller"
->
->		# Logs
->		LOG_DIR = "/tmp/bridge_slave/logs"
+## Logs
 
-# Logs
-LOG_DIR = "/tmp/app/logs"
+La struttura file dei log di sistema è organizzata nel seguente modo
+
+	logs/
+	├── app/
+	│   ├── 2024-11-29.log
+	│   ├── 2024-11-30.log
+	|
+	├── errors/
+	│   ├── critical/
+	│   │   ├── 2024-11-29.log
+	│   │   ├── 2024-11-30.log
+	│   ├── warnings/
+	│   │   ├── 2024-11-29.log
+	|
+	├── performance/
+	│   ├── 2024-11-29.log
+	|
+	├── security/
+	│   ├── auth/
+	│   │   ├── 2024-11-29.log
+	│   ├── firewall.log
+	|
+	├── metrics/
+	│   ├── cpu_usage.csv
+	│   ├── memory_usage.csv
+	|
+	├── backups/
+	│   ├── 2024-10-logs.tar.gz
+	│   ├── 2024-11-logs.tar.gz
+
+I log sono raccolti temporalmente e sono divisi in queste categorie:
+- In `app/` troviamo i log generati automaticamente dell'applicazione
+
+- In `errors/` troviamo i log generati da errori nel codice, suddivisi in categoria in base alla loro gravità: `critical`, `warnings`
+
+- In `performance` troviamo i log con le prestazioni del programma, tipo tempi di esecuzione dei processi e funzioni
+
+- In `security` troviamo i log rigurdanti autenticazioni, autorizzazioni e firewall
+
+- In `metrics` troviamo i log con le prestazioni della macchina/computer: cpu usage, memory usage ecc...
+
+- In `backups` troviamo i log compressi e pronti ad essere archiviati
 
 ## Authors
 
