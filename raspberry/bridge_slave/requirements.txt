@@ -4,3 +4,4 @@ pyserial-asyncio
 paho-mqtt
 python-dotenv
 pytest
+coverage

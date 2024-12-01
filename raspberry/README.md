@@ -104,51 +104,6 @@ Una volta attivato l'ambiente basterà solamente aggiornare pip (per evenienza) 
 
 	$ pip install --upgrade pip && pip install -r requirements.txt
 
-## Logs
-
-La struttura file dei log di sistema è organizzata nel seguente modo
-
-	logs/
-	├── app/
-	│   ├── 2024-11-29.log
-	│   ├── 2024-11-30.log
-	|
-	├── errors/
-	│   ├── critical/
-	│   │   ├── 2024-11-29.log
-	│   │   ├── 2024-11-30.log
-	│   ├── warnings/
-	│   │   ├── 2024-11-29.log
-	|
-	├── performance/
-	│   ├── 2024-11-29.log
-	|
-	├── security/
-	│   ├── auth/
-	│   │   ├── 2024-11-29.log
-	│   ├── firewall.log
-	|
-	├── metrics/
-	│   ├── cpu_usage.csv
-	│   ├── memory_usage.csv
-	|
-	├── backups/
-	│   ├── 2024-10-logs.tar.gz
-	│   ├── 2024-11-logs.tar.gz
-
-I log sono raccolti temporalmente e sono divisi in queste categorie:
-- In `app/` troviamo i log generati automaticamente dell'applicazione
-
-- In `errors/` troviamo i log generati da errori nel codice, suddivisi in categoria in base alla loro gravità: `critical`, `warnings`
-
-- In `performance` troviamo i log con le prestazioni del programma, tipo tempi di esecuzione dei processi e funzioni
-
-- In `security` troviamo i log rigurdanti autenticazioni, autorizzazioni e firewall
-
-- In `metrics` troviamo i log con le prestazioni della macchina/computer: cpu usage, memory usage ecc...
-
-- In `backups` troviamo i log compressi e pronti ad essere archiviati
-
 ## Authors
 
 - [Nicola Guerra](https://github.com/Ng2k)
