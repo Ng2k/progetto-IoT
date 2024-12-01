@@ -4,5 +4,5 @@ __pycache__/
 .vscode/
 node_modules/
 *_venv/
-tests/
 logs/
+tests/
