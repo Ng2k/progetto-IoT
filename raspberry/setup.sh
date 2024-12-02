@@ -41,6 +41,16 @@ update_system() {
 		exit 1
 	fi
 
+	if [ $error_code -ne 0 ]; then
+		log_with_timestamp "$(write_error "Errore durante l'installazione di python. Controlla il file /tmp/apt-errors.log.")"
+		exit 1
+	fi
+
+	sudo apt-get install -y --no-install-recommends \
+       python3 \
+       python3-pip \
+       python3-venv \
+
 	end_time=$(date +%s%3N)   # Tempo finale in millisecondi
 	elapsed_time_ms=$((end_time - start_time))
 	elapsed_time=$(echo "scale=3; $elapsed_time_ms / 1000" | bc)
