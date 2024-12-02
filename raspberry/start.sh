@@ -8,12 +8,22 @@ source ./shell/docker.sh
 # Settaggio dell'ambiente (default: 'dev')
 ENV=${1:-dev}
 
+# Controlla se lo script viene eseguito come root
+check_root() {
+	if [ "$EUID" -ne 0 ]; then
+		log_with_timestamp "$(write_error "Questo script deve essere eseguito come root.")"
+		exit 1
+	fi
+}
+
 # Main script
 main() {
 	main_start_time=$(date +%s%3N) # Tempo iniziale in millisecondi
 
 	log_with_timestamp "${BPink}Script di configurazione e avvio dei container Docker.${Color_Off}"
 	log_with_timestamp ""
+
+	check_root
 
 	# Configura i permessi per accedere alla porta seriale del microcontrollore
 	setup_permissions
