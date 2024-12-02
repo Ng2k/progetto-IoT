@@ -64,6 +64,7 @@ main() {
 	install_docker  				# Installa Docker se necessario
 	install_docker_compose 			# Installa Docker Compose se necessario
 	setup_permissions				# Configura i permessi per la porta seriale
+	chmod +x ./start.sh		# Rende eseguibile lo script di avvio
 	reboot
 }
 
