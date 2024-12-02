@@ -17,3 +17,5 @@ __pycache__
 logs/
 htmlcov/
 .coverage
+
+firebase-config.json

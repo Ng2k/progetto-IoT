@@ -33,6 +33,7 @@ install_docker() {
 		log_with_timestamp "	|-> $(write_command "sudo usermod -aG docker ${USER}")"
 		log_with_timestamp "	|	|-> $(write_description "Aggiunge l'utente al gruppo 'docker' per eseguire comandi Docker")"
 		sudo usermod -aG docker ${USER} 2> /tmp/docker-errors.log
+		sudo su - ${USER} 2> /tmp/docker-errors.log
 		error_code=$?
 		if [ $error_code -ne 0 ]; then
 			log_with_timestamp "$(write_error "Errore durante l'aggiunta dell'utente al gruppo 'docker'. Controlla il file /tmp/docker-errors.log.")"
@@ -52,7 +53,7 @@ install_docker_compose() {
 
 	log_with_timestamp "$(write_task "Installazione di Docker Compose.")"
 
-	if ! command -v docker-compose &> /dev/null; then
+	if ! command -v docker compose &> /dev/null; then
 		log_with_timestamp "	|-> $(write_command "sudo apt install -y docker-compose")"
 		log_with_timestamp "	|	|-> $(write_description "Installa Docker Compose")"
 		sudo apt install -y docker-compose 2> /tmp/apt-errors.log
@@ -98,10 +99,10 @@ exec_docker_compose() {
 	fi
 
 	log_with_timestamp "	|"
-	log_with_timestamp "	|-> $(write_command "docker-compose --env-file .env.$1 -f docker-compose.yml up --no-build -d")"
-	log_with_timestamp "	|	|-> $(write_description "Esegue docker-compose con il file di environment .env.$1")"
+	log_with_timestamp "	|-> $(write_command "docker compose --env-file .env.$1 -f docker-compose.yml up --no-build -d")"
+	log_with_timestamp "	|	|-> $(write_description "Esegue docker compose con il file di environment .env.$1")"
 
-	docker-compose --env-file .env.$1 -f docker-compose.yml up --no-build -d 2>/tmp/docker-errors.log
+	docker compose --env-file .env.$1 -f docker-compose.yml up --no-build -d 2> /tmp/docker-errors.log
 	error_code=$?
 	if [ $error_code -ne 0 ]; then
 		log_with_timestamp "$(write_error "Errore durante l'avvio dei container tramite docker-compose. Per saperne di più leggi il file /tmp/docker-errors.log")"

@@ -18,7 +18,7 @@ services:
       - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
       - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
       - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
-      - LOG_DIR=${LOG_DIR}/bridge_master
+      - LOG_DIR=${LOG_DIR}
     restart: always
     volumes:
       - ./bridge_master:/app  # Monta il codice sorgente
@@ -45,7 +45,7 @@ services:
       - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
       - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
       - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
-      - LOG_DIR=${LOG_DIR}/bridge_slave
+      - LOG_DIR=${LOG_DIR}
     networks:
       - mqtt-network
     depends_on:

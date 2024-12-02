@@ -34,7 +34,7 @@ update_system() {
 	log_with_timestamp "	|"
 	log_with_timestamp "	|-> $(write_command "sudo apt-get upgrade -y")"
 	log_with_timestamp "	|	|-> $(write_description "Aggiorna i pacchetti installati")"
-	sudo apt-get upgrade -y "> /tmp/apt-errors.log"
+	sudo apt-get upgrade -y 2> /tmp/apt-errors.log
 	error_code=$?
 	if [ $error_code -ne 0 ]; then
 		log_with_timestamp "$(write_error "Errore durante l'installazione degli aggiornamenti. Controlla il file /tmp/apt-errors.log.")"
@@ -49,12 +49,12 @@ update_system() {
 
 # Main script
 main() {
-	check_root      			# Controlla se lo script è eseguito come root
-	update_system   			# Aggiorna il sistema operativo			
-	install_docker  			# Installa Docker se necessario
-	install_docker_compose  	# Installa Docker Compose se necessario
-	setup_permissions			# Configura i permessi per la porta seriale
-	exec_docker_compose			# Avvia i container Docker
+	check_root      				# Controlla se lo script è eseguito come root
+	update_system   				# Aggiorna il sistema operativo			
+	install_docker  				# Installa Docker se necessario
+	install_docker_compose 			# Installa Docker Compose se necessario
+	setup_permissions				# Configura i permessi per la porta seriale
+	reboot
 }
 
 main
