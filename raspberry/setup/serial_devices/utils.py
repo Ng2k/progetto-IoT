@@ -76,7 +76,7 @@ def set_devices_permissions(devices: list):
 			indent = 1
 		)
 		log_with_timestamp(
-			tag = OperationTags.DESCRIPTION,
+			tag = OperationTags.INFO,
 			log_message = "Inizio configurazione dei permessi e dei dispositivi seriali.",
 			indent = 2
 		)

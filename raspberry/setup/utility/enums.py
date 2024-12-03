@@ -32,4 +32,3 @@ class OperationTags(Enum):
 	SUCCESS = f"{Colors.BOLD_GREEN.value}[SUCCESS] {Colors.COLOR_OFF.value}"
 	ERROR = f"{Colors.BOLD_RED.value}[ERROR] {Colors.COLOR_OFF.value}"
 	COMMAND = f"{Colors.BOLD_YELLOW.value}[COMMAND] {Colors.COLOR_OFF.value}"
-	DESCRIPTION = f"{Colors.WHITE.value}[DESCRIPTION] {Colors.COLOR_OFF.value}"

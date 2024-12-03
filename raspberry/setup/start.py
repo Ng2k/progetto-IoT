@@ -41,14 +41,6 @@ def main():
         log_message="Script di configurazione e avvio dei container Docker."
     )
 
-    # Verifica se il flag --update-system è presente
-    if args.update_system:
-        log_with_timestamp(
-            tag=OperationTags.INFO,
-            log_message="Aggiornamento del sistema operativo in corso..."
-        )
-        update_system()
-
     # Continua con il resto del tuo script
     env = args.env
     log_with_timestamp(
@@ -57,6 +49,11 @@ def main():
     )
 
     check_root()
+
+	# Verifica se il flag --update-system è presente
+    if args.update_system:
+        update_system()
+
     devices = scan_usb_devices()
     set_devices_permissions(devices)
     add_devices_to_docker_compose(devices, "./docker-compose.yml")

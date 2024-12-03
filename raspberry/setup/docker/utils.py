@@ -33,7 +33,7 @@ def exec_docker_compose(env: str):
 		indent = 1
 	)
 	log_with_timestamp(
-		tag = OperationTags.DESCRIPTION,
+		tag = OperationTags.INFO,
 		log_message = "Avvio dei container Docker.",
 		indent = 2
 	)

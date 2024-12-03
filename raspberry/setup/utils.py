@@ -80,7 +80,7 @@ def update_system():
 		indent = 1
 	)
 	log_with_timestamp(
-		tag = OperationTags.DESCRIPTION,
+		tag = OperationTags.INFO,
 		log_message = "Aggiornamento del sistema operativo",
 		indent = 2
 	)
