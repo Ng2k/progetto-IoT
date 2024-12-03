@@ -30,7 +30,6 @@ update_system() {
 		exit 1
 	fi
 
-
 	log_with_timestamp "	|"
 	log_with_timestamp "	|-> $(write_command "sudo apt-get upgrade -y")"
 	log_with_timestamp "	|	|-> $(write_description "Aggiorna i pacchetti installati")"

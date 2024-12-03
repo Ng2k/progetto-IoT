@@ -62,3 +62,40 @@ def get_env():
 	log_with_timestamp(tag = OperationTags.NONE, log_message = "")
 
 	return env
+
+def update_system():
+	"""
+	Aggiorna il sistema operativo.
+	"""
+	log_with_timestamp(
+		tag = OperationTags.TASK,
+		log_message = "Aggiornamento del sistema operativo"
+	)
+
+	start_time = time.time()
+
+	log_with_timestamp(
+		tag = OperationTags.COMMAND,
+		log_message = "apt-get update && apt-get upgrade -y 2> /tmp/update-errors.log",
+		indent = 1
+	)
+	log_with_timestamp(
+		tag = OperationTags.DESCRIPTION,
+		log_message = "Aggiornamento del sistema operativo",
+		indent = 2
+	)
+	try:
+		os.system("apt-get update && apt-get upgrade -y 2> /tmp/update-errors.log")
+	except Exception as e:
+		handle_error(
+			"Errore durante l'aggiornamento del sistema operativo.",
+			logfile="/tmp/update-errors.log"
+		)
+
+	end_time = time.time()
+	success_color = Colors.GREEN.value
+	color_off = Colors.COLOR_OFF.value
+	time_txt = f"{success_color}{end_time - start_time:.2f}s{color_off}"
+	msg = f"{time_txt} - Aggiornamento del sistema operativo completato con successo"
+	log_with_timestamp(tag = OperationTags.SUCCESS, log_message = msg)
+	log_with_timestamp(tag = OperationTags.NONE, log_message = "")
