@@ -1,69 +1,63 @@
-services:
-  bridge-master:
-    build:
-      context: ./bridge_master
-      dockerfile: Dockerfile
-    container_name: bridge-master
-    networks:
-      - mqtt-network
-    depends_on:
-      - mqtt-broker
-    environment:
-      - PYTHONUNBUFFERED=1  # Abilita log in tempo reale
-      - PYTHON_ENV=development
-      - MQTT_BROKER=${MQTT_BROKER}
-      - MQTT_PORT=${MQTT_PORT}
-      - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
-      - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
-      - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
-      - LOG_DIR=${LOG_DIR}
-    restart: always
-    volumes:
-      - ./bridge_master:/app
-      - logs-volume-master:/app/logs
-
-  bridge-slave:
-    build:
-      context: ./bridge_slave
-      dockerfile: Dockerfile
-    container_name: bridge-slave
-    devices:
-      - /dev/ttyACM0:/dev/ttyACM0
-    volumes:
-      - ./bridge_slave:/app  # Monta il progetto bridge_slave
-      - logs-volume-slave:/app/logs  # Volume per i log
-    environment:
-      - PYTHONUNBUFFERED=1  # Abilita log in tempo reale
-      - PYTHON_ENV=development
-      - MQTT_BROKER=${MQTT_BROKER}
-      - MQTT_PORT=${MQTT_PORT}
-      - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
-      - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
-      - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
-      - LOG_DIR=${LOG_DIR}
-    networks:
-      - mqtt-network
-    depends_on:
-      - mqtt-broker
-    restart: always
-
-  mqtt-broker:
-      image: eclipse-mosquitto:latest  # Utilizziamo Mosquitto come broker MQTT
-      container_name: mqtt-broker
-      networks:
-        - mqtt-network
-      ports:
-        - "1883:1883"  # Porta MQTT
-      volumes:
-        - mosquitto-data:/mosquitto/data  # Persistenza dei dati del broker
-        - ./mosquitto.conf:/mosquitto/config/mosquitto.conf # Configurazione broker
-
 networks:
-  mqtt-network:
-    driver: bridge
-
+    mqtt-network:
+        driver: bridge
+services:
+    bridge-master:
+        build:
+            context: ./bridge_master
+            dockerfile: Dockerfile
+        container_name: bridge-master
+        depends_on:
+        - mqtt-broker
+        environment:
+        - PYTHONUNBUFFERED=1
+        - PYTHON_ENV=development
+        - MQTT_BROKER=${MQTT_BROKER}
+        - MQTT_PORT=${MQTT_PORT}
+        - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
+        - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
+        - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
+        - LOG_DIR=${LOG_DIR}
+        networks:
+        - mqtt-network
+        restart: always
+        volumes:
+        - ./bridge_master:/app
+        - logs-volume-master:/app/logs
+    bridge-slave:
+        build:
+            context: ./bridge_slave
+            dockerfile: Dockerfile
+        container_name: bridge-slave
+        depends_on:
+        - mqtt-broker
+        environment:
+        - PYTHONUNBUFFERED=1
+        - PYTHON_ENV=development
+        - MQTT_BROKER=${MQTT_BROKER}
+        - MQTT_PORT=${MQTT_PORT}
+        - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
+        - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
+        - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
+        - LOG_DIR=${LOG_DIR}
+        networks:
+        - mqtt-network
+        restart: always
+        volumes:
+        - ./bridge_slave:/app
+        - logs-volume-slave:/app/logs
+    mqtt-broker:
+        container_name: mqtt-broker
+        image: eclipse-mosquitto:latest
+        networks:
+        - mqtt-network
+        ports:
+        - 1883:1883
+        volumes:
+        - mosquitto-data:/mosquitto/data
+        - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
 volumes:
-  mosquitto-data:
-    driver: local
-  logs-volume-slave:
-  logs-volume-master:
+    logs-volume-master: null
+    logs-volume-slave: null
+    mosquitto-data:
+        driver: local

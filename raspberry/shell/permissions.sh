@@ -21,12 +21,17 @@ setup_permissions() {
     log_with_timestamp "    |-> $(write_command "chmod 666 /dev/ttyACM0")"
     log_with_timestamp "    |    |-> $(write_description "Cambia i permessi di lettura e scrittura al file /dev/ttyACM0")"
 
-    sudo chmod 666 /dev/ttyACM0 2>/tmp/permission-errors.log
-	error_code=$?
-	if [ $error_code -ne 0 ]; then
-		log_with_timestamp "$(write_error "Errore durante la modifica dei permessi del dispositivo /dev/ttyACM0. Per saperne di più leggi il file /tmp/permission-errors.log")"
-		exit 1
-	fi
+    # Leggi i devices dal file docker-compose.yml
+    DEVICES=$(grep -oP 'ttyACM\d' docker-compose.yml)
+    echo $DEVICES
+    #for device in $DEVICES; do
+    #    sudo chmod 666 /dev/$device 2>/tmp/permission-errors.log
+    #    error_code=$?
+    #    if [ $error_code -ne 0 ]; then
+    #        handle_error "Errore durante la modifica dei permessi del dispositivo /dev/$device." /tmp/permission-errors.log
+    #        exit 1
+    #    fi
+    #done
 
     end_time=$(date +%s%3N)   # Tempo finale in millisecondi
     elapsed_time_ms=$((end_time - start_time))

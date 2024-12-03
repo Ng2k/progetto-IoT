@@ -63,69 +63,6 @@ install_docker_compose() {
     log_with_timestamp "$(write_success "- ${elapsed_time}s - Docker Compose installato con successo.")"
 }
 
-Devices=""
-
-# Funzione per controllare se un dispositivo esiste già nel file docker-compose.yml
-check_device_exists() {
-    local device=$1
-    local docker_compose_file="docker-compose.yml"
-
-	log_with_timestamp "	|-> $(write_info "Controllo del dispositivo ${device} nel file docker-compose.yml")"
-	log_with_timestamp "	|-> $(write_command "grep -q ${device} ${docker_compose_file}")"
-	log_with_timestamp "	|	|-> $(write_description "Controlla se il dispositivo è presente nel file docker-compose.yml")"
-    # Controlla se il dispositivo è presente nel tag 'devices' del container 'bridge-slave'
-    if grep -q "devices:" "$docker_compose_file"; then
-		log_with_timestamp "	|	|-> $(write_info "Il tag 'devices' è presente nel file docker-compose.yml.")"
-		log_with_timestamp "	|-> $(write_command "grep -q ${device} ${docker_compose_file}")"
-		log_with_timestamp "	|	|-> $(write_description "Controlla se il dispositivo è presente nel file docker-compose.yml")"
-        if grep -q "$device" "$docker_compose_file"; then
-            log_with_timestamp "	|	|-> $(write_info "Dispositivo ${device} trovato nel file docker-compose.yml.")"
-		else
-			log_with_timestamp "	|	|-> $(write_info "Dispositivo ${device} non trovato nel file docker-compose.yml.")"
-			return 1  # Dispositivo non presente
-		fi
-    else
-		log_with_timestamp "	|	|-> $(write_error "Il tag 'devices' non è presente nel file docker-compose.yml.")"
-        return 1  # Tag devices non presente
-    fi
-}
-
-# Funzione per definire i dispositivi mancanti
-define_missing_devices() {
-	local missing_devices=""
-	for device in $1; do
-		if ! check_device_exists "$device"; then
-			missing_devices+="$device:$device"$'\n'
-		fi
-	done
-	Devices=$missing_devices
-}
-
-update_docker_compose() {
-    local start_time=$(date +%s%3N)
-    local docker_compose_file="docker-compose.yml"
-
-	log_with_timestamp "$(write_task "Aggiornamento del file docker-compose.yml.")"
-
-	# Controlla se ci sono dispositivi mancanti nel file docker-compose.yml
-	define_missing_devices $1
-	device_lines=$(printf "      - %s\n" "$Devices:$Devices")
-
-	if [ -z "$Devices" ]; then
-		log_with_timestamp "     |-> $(write_info "Nessun dispositivo da aggiungere al file docker-compose.yml.")"
-		return 0
-	fi
-
-	log_with_timestamp "     |-> $(write_command "sed -i '/devices:/a\\${device_lines}' ${docker_compose_file}")"
-	log_with_timestamp "     |-> $(write_description "Aggiunge dispositivi al file docker-compose.yml")"
-	sed -i "/devices:/a\\${device_lines}" "${docker_compose_file}"
-
-    handle_error "Errore durante la modifica dei dispositivi nel file docker-compose.yml." /tmp/docker-errors.log
-
-    local elapsed_time=$(calculate_elapsed_time $start_time)
-    log_with_timestamp "$(write_success "- ${elapsed_time}s - Operazione sui dispositivi completata con successo.")"
-}
-
 # Esegue docker-compose con un file di environment specificato
 exec_docker_compose() {
     local start_time=$(date +%s%3N)
