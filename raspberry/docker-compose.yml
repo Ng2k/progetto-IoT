@@ -3,8 +3,6 @@ services:
     build:
       context: ./bridge_master
       dockerfile: Dockerfile
-      cache_from:
-        - bridge-master-cache:latest
     container_name: bridge-master
     networks:
       - mqtt-network
@@ -21,20 +19,17 @@ services:
       - LOG_DIR=${LOG_DIR}
     restart: always
     volumes:
-      - ./bridge_master:/app  # Monta il codice sorgente
+      - ./bridge_master:/app
       - logs-volume-master:/app/logs
 
   bridge-slave:
     build:
       context: ./bridge_slave
       dockerfile: Dockerfile
-      cache_from:
-        - bridge-slave-cache:latest
     container_name: bridge-slave
     devices:
-      - "/dev/ttyACM0:/dev/ttyACM0"  # Montiamo il dispositivo seriale dall'host
+      - /dev/ttyACM0:/dev/ttyACM0
     volumes:
-      - "/dev:/dev"
       - ./bridge_slave:/app  # Monta il progetto bridge_slave
       - logs-volume-slave:/app/logs  # Volume per i log
     environment:
@@ -53,15 +48,15 @@ services:
     restart: always
 
   mqtt-broker:
-    image: eclipse-mosquitto:latest  # Utilizziamo Mosquitto come broker MQTT
-    container_name: mqtt-broker
-    networks:
-      - mqtt-network
-    ports:
-      - "1883:1883"  # Porta MQTT
-    volumes:
-      - mosquitto-data:/mosquitto/data  # Persistenza dei dati del broker
-      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf # Configurazione broker
+      image: eclipse-mosquitto:latest  # Utilizziamo Mosquitto come broker MQTT
+      container_name: mqtt-broker
+      networks:
+        - mqtt-network
+      ports:
+        - "1883:1883"  # Porta MQTT
+      volumes:
+        - mosquitto-data:/mosquitto/data  # Persistenza dei dati del broker
+        - ./mosquitto.conf:/mosquitto/config/mosquitto.conf # Configurazione broker
 
 networks:
   mqtt-network:
