@@ -19,3 +19,4 @@ htmlcov/
 .coverage
 
 firebase-config.json
+mosquitto.conf

@@ -2,7 +2,7 @@
 
 main() {
 	# Inizializza il progetto
-	sudo python3 -m setup.start "$@"
+	sudo python3 -m setup.python.start "$@"
 }
 
 main "$@"
