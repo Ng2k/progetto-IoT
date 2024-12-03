@@ -89,8 +89,15 @@ main() {
 	fi
 
 	setup_docker					# Installa Docker e Docker Compose
-	set_user_permissions			# Configura i permessi all'utente
+	set_user_permissions			# Configura i permessi all'utent
+
+	log "TASK" "Abilitazione dell'eseguibile start.sh."
+	log "COMMAND" "chmod +x ./start.sh" 1
+	log "INFO" "Rende eseguibile lo script di avvio." 2
 	chmod +x ./start.sh				# Rende eseguibile lo script di avvio
+
+	log "TASK" "Riavvio del sistema."
+	log "COMMAND" "sudo reboot" 1
 	reboot
 }
 
