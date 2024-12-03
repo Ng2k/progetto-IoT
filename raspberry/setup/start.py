@@ -57,10 +57,10 @@ def main():
     )
 
     check_root()
-    exec_docker_compose(env)
     devices = scan_usb_devices()
     set_devices_permissions(devices)
-    add_devices_to_docker_compose(devices)
+    add_devices_to_docker_compose(devices, "./docker-compose.yml")
+    exec_docker_compose(env)
 
     end_time = time.time()
     elapsed_time = end_time - start_time
