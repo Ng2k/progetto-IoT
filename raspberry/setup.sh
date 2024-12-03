@@ -3,9 +3,6 @@
 source ./shell/utils.sh
 source ./shell/docker.sh
 
-# Settaggio dell'ambiente (default: 'dev')
-ENV=${1:-dev}
-
 # Controlla se lo script viene eseguito come root
 check_root() {
 	if [ "$EUID" -ne 0 ]; then
