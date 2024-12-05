@@ -2,6 +2,14 @@
   "name": "cloud_api",
   "module": "index.ts",
   "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun run src/index.ts --watch",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "bun build ./src/index.ts --outdir dist --minify",
+    "start:prod": "bun run dist/index.js"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/express": "^5.0.0"
