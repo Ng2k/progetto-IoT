@@ -7,9 +7,13 @@ services:
                 NODE_ENV: ${NODE_ENV}
         volumes:
             - .:/app
+            - dist:/app/dist
         ports:
             - "3000:3000"
         environment:
             NODE_ENV: ${NODE_ENV}
         env_file:
             - .env.${ENV}
+
+volumes:
+    dist: null

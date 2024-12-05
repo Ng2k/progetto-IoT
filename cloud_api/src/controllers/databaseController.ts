@@ -1,29 +1,40 @@
-import type { Request, Response, NextFunction } from "express";
+/**
+ * @fileoverview Interfaccia per i clienti del database
+ * @author Nicola Guerra <nicola.ng2k@gmail.com>
+ * @author Tommaso Mortara <>
+*/
+import type { Request, Response } from "express";
+
 import { DatabaseHandler } from "./database/databaseHandler";
 import { Firestore } from "./database/clients/";
+import { HttpStatusCode } from "../http-status-code";
+
+/**
+ * Funzione per caricare le readings nel database
+ * @param {Request} req 
+ * @param {Response} res 
+ */
+const uploadReadings = async (req: Request, res: Response) => {
+	const { readings } = req.body;
+	const database: DatabaseHandler = new DatabaseHandler(
+		new Firestore(),
+	);
+
+	try {
+		const temp = await database.uploadReadings(readings);
+		res.status(HttpStatusCode.OK).json({
+			message: "Readings uploaded",
+			data: temp
+		});
+	} catch (error) {
+		res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+			message: "Internal server error"
+		});
+	}
+};
 
 const controller = {
-	uploadReadings: async (req: Request, res: Response, next: NextFunction) => {
-		// todo: logica di upload readings
-
-		//prendere dal body della request i dati da inserire nel db
-		const { readings } = req.body;
-		//preprocessare i dati se necessario
-		//inserire i dati nel db
-		const database: DatabaseHandler = new DatabaseHandler(
-			new Firestore(),
-
-		);
-
-		try {
-			const temp = await database.uploadReadings(readings);
-		} catch (error) {
-			res.status(500).json({ message: "Internal server error" });
-			next();
-		}
-
-		res.status(200).json({ message: "Database route" });
-	}
+	uploadReadings,
 };
 
 export const databaseController = controller;

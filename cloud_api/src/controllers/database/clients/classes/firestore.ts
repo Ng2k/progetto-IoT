@@ -5,6 +5,11 @@
 */
 import { firestore } from "../../../../firebase/app";
 
+import type {
+	DocumentReference,
+	DocumentData,
+	DocumentSnapshot
+} from "firebase-admin/firestore";
 import type { IClient } from "../interfaces/client.interface";
 
 /**
@@ -14,15 +19,29 @@ import type { IClient } from "../interfaces/client.interface";
  */
 export class Firestore implements IClient {
 	/**
+	 * Funzione per creare un oggetto con le readings raggruppati per id microcontrollore
+	 * @param readings - Lista di readings
+	 * @returns {{ [key: string]: any[] }} readings raggruppate
+	 */
+	private createStandGroups(readings: any): { [key: string]: any[] } {
+		return readings.reduce((acc: any, reading: any) => {
+			const { mc_id } = reading;
+			if (!acc[mc_id]) acc[mc_id] = [];
+			acc[mc_id].push(reading);
+			return acc;
+		}, {});
+	}
+	/**
 	 * Funzione per ottenere un microcontrollore tramite il suo id
 	 * @param {string} id - Id del microcontrollore 
 	 * @returns {Promise<any>} Ritorna il microcontrollore
 	 */
-	private async getMicrocontrollerById(id: string): Promise<any> {
+	private async getMicrocontrollerById(id: string): Promise<{
+		id: string,
+		data: FirebaseFirestore.DocumentData | undefined
+	} | null> {
 		const collection = firestore.collection('Microcontrollers');
 		const docRef = collection.doc(id);
-
-		// Faccio query di select per documento mc -> {id, current_stand_id, is_busy}
 		const doc = await docRef.get();
 
 		if (!doc.exists) {
@@ -30,47 +49,37 @@ export class Firestore implements IClient {
 			return null;
 		}
 
-		return doc.data();
-	}
-	
-	/**
-	 * Funzione per ottenere uno stand tramite il suo riferimento
-	 * @param {any} reference - Riferimento al documento dello stand 
-	 * @returns {Promise<any>} Ritorna il documento dello stand
-	 */
-	private async getStandByReference(reference: any): Promise<any> {
-		const currentStandDoc = await reference.get();
-		
-		if (!currentStandDoc.exists) {
-			console.log('No such document for current_stand!');
-			return null;
-		}
-
-		const currentStandData = currentStandDoc.data();
-		currentStandData.id = currentStandDoc.id;
-		return currentStandData;
+		return {
+			id: doc.id,
+			data: doc.data()
+		};
 	}
 
 	async updateReadings(readings: any): Promise<any> {
-		//todo aggiungi readings a Firestore
-		const dataToUpload = await Promise.all(
-			readings.map(async (reading: any) => {
-				const data = await this.getMicrocontrollerById(reading.mc_id);
-				const currentStand = (data && data.current_stand)
-					? await this.getStandByReference(data.current_stand)
-					: {};
-				currentStand.metadata = reading
-				return currentStand;
-			})
-		);
+		const readingsGrouped: { [key: string]: any[] } = this.createStandGroups(readings);
+		return await Promise.all(
+			Object
+				.keys(readingsGrouped)
+				.map(this.getMicrocontrollerById)
+				.map(async mcPromise => {
+					const mc = await mcPromise;
+					if(!(mc && mc.data && mc.id)) {
+						return null;
+					}
 
-		dataToUpload.forEach(({ id, metadata }: any) => {
-			const standRef = firestore.collection('Stands').doc(id);
-			try {
-				standRef.update({ metadata });
-			} catch (error) {
-				console.error('Error adding document: ', error);
-			}
-		});
+					const readings = readingsGrouped[mc.id];
+					const currentStand: DocumentReference = mc.data.current_stand
+					const standSnapshot: DocumentSnapshot = await currentStand.get();
+					const stand: DocumentData|undefined = standSnapshot.data();
+					if (!standSnapshot.exists || !stand) {
+						console.log('No such document!');
+						return null
+					}
+					const metadata = stand.metadata.concat(readings);
+					//todo: controllo se non sto inserende la stessa reading due volte
+					//currentStand.update({ metadata });
+					return readings;
+				})
+		);
 	}
 }

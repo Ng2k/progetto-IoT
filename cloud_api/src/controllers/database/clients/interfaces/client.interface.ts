@@ -14,5 +14,5 @@ export interface IClient {
 	 * @param {any} readings - Rilevazioni
 	 * @throws {Error} - Se non è possibile aggiungere le rilevazioni
 	 */
-	updateReadings(readings: any): void;
+	updateReadings(readings: any): Promise<any>;
 }

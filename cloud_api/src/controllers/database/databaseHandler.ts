@@ -1,9 +1,14 @@
+/**
+ * @fileoverview Classe per la gestione del database
+ * @author Nicola Guerra <nicola.ng2k@gmail.com>
+ * @author Tommaso Mortara <>
+*/
 import type { IClient } from "./clients/";
 
 export class DatabaseHandler {
 	constructor(private readonly _client: IClient) { }
 
-	async uploadReadings(readings: any): Promise<void> {
-		this._client.updateReadings(readings);
+	async uploadReadings(readings: any): Promise<any> {
+		return this._client.updateReadings(readings);
 	}
 }

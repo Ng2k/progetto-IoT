@@ -4,11 +4,11 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "start": "bun run src/index.ts",
-    "dev": "bun run src/index.ts --watch src/**/*",
+    "dev": "bun run src/index.ts --watch ./src/**/*.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "bun build ./src/index.ts --outdir dist --minify",
-    "start:prod": "bun run dist/index.js"
+    "build": "bun build ./src/**/*.ts --outdir ./dist --target bun --sourcemap --minify",
+    "start": "bun run src/index.ts",
+    "lint": "eslint ./src --ext .js,ts"
   },
   "devDependencies": {
     "@types/bun": "latest",

@@ -8,6 +8,7 @@
 import express from "express";
 
 import { databaseRouter } from "./routers"
+import { HttpStatusCode } from "./http-status-code";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -16,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/database", databaseRouter)
 app.all("*", (req, res) => {
-	res.status(404).json({ message: "Route not found" });
+	res.status(HttpStatusCode.NOT_FOUND).json({ message: "Route not found" });
 });
 
 app.listen(port, () => {
