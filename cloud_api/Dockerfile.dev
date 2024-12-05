@@ -1,0 +1,20 @@
+# Usa l'immagine base di Bun.js
+FROM oven/bun:latest
+
+# Imposta la directory di lavoro
+WORKDIR /app
+
+# Copia solo i file di configurazione delle dipendenze
+COPY package.json bun.lockb ./
+
+# Installa le dipendenze
+RUN bun install
+
+# Copia il resto dei file del progetto
+COPY . .
+
+# Espone la porta su cui l'applicazione sarà in ascolto
+EXPOSE 3000
+
+# Comando di default per eseguire l'applicazione in modalità sviluppo
+CMD ["bun", "run", "--watch", "src/index.ts"]

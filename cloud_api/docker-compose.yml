@@ -1,0 +1,15 @@
+services:
+    bun-express:
+        build:
+            context: .
+            dockerfile: ${DOCKERFILE}
+        args:
+            NODE_ENV: ${NODE_ENV}
+        volumes:
+            - .:/app
+        ports:
+            - "3000:3000"
+        environment:
+        NODE_ENV: ${NODE_ENV}
+        env_file:
+            - .env.${ENV}
