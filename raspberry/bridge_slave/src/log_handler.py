@@ -14,24 +14,10 @@ class LogHandler(metaclass=SingletonMeta):
     """
     Gestisce una struttura organizzata di log per un'applicazione.
 
-    Struttura delle cartelle gestita:
-
-    logs/
-        app/
-        errors/
-        	critical/
-        	warnings/
-        performance/
-        security/
-            auth/
-        metrics/
-        backups/
-
     Supporta logging giornaliero, rotazione automatica e backup dei log.
     """
     
     def __init__(self, log_dir: str) -> None:
-        self._BASE_DIR = log_dir
         self._BASE_LOG_DIR = log_dir
         self._create_log_directories()
         self._loggers = self._setup_loggers()
