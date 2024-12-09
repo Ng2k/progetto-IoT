@@ -2,3 +2,8 @@
         registrandola e applicandovi timestamp e IDArduino.
         Poi da aggiungere la possibilità di far runnare il codice in parallelo su più porte (4 se seriale
         USB)
+
+11/12   Abbiamo finito la creazione degli endpoint necessari per la comunicazione del Bridge con API.
+        Dobbiamo dal Bridge dare la possibilità di chiamare queste funzioni di API per mandare il .csv e ricevere 
+        il counter. Poi si inizierà la creazione del sito con, di base, la home page e la pagina login di admin.
+        Aggiungeremo poi comunicazioni con venditori e clienti. Ultimo: arduino per display LCD.
