@@ -31,6 +31,7 @@ export class Firestore implements IClient {
 			return acc;
 		}, {});
 	}
+
 	/**
 	 * Funzione per ottenere un microcontrollore tramite il suo id
 	 * @param {string} id - Id del microcontrollore 
@@ -38,7 +39,7 @@ export class Firestore implements IClient {
 	 */
 	private async getMicrocontrollerById(id: string): Promise<{
 		id: string,
-		data: FirebaseFirestore.DocumentData | undefined
+		data: FirebaseFirestore.DocumentData | undefined,
 	} | null> {
 		const collection = firestore.collection('Microcontrollers');
 		const docRef = collection.doc(id);
@@ -55,31 +56,63 @@ export class Firestore implements IClient {
 		};
 	}
 
+	async getStandsOccupancy(eventId: string): Promise<any> {
+		const eventRef = firestore.collection('Events').doc(eventId);
+		const mcRef = firestore.collection('Microcontrollers');
+		const mcCollection = mcRef.where('current_event', '==', eventRef);
+		const mcList = await mcCollection.get();
+		const mcListData = mcList.docs.map(doc => doc.data());
+		const standListPromise = mcListData.map(async mc => {
+			const currentStand = await mc.current_stand.get();
+			return {
+				id: currentStand.id,
+				...currentStand.data()
+			}
+		});
+		const standListData = await Promise.all(standListPromise);
+		const standsOccupancy = standListData.reduce((acc: { [key: string]: number }, stand: any) => {
+			return {
+				...acc,
+				[stand.id]: stand.metadata[stand.metadata.length - 1].people
+			};
+		}, {});
+		return standsOccupancy;	
+	}
+
 	async updateReadings(readings: any): Promise<any> {
 		const readingsGrouped: { [key: string]: any[] } = this.createStandGroups(readings);
-		return await Promise.all(
-			Object
-				.keys(readingsGrouped)
-				.map(this.getMicrocontrollerById)
-				.map(async mcPromise => {
-					const mc = await mcPromise;
-					if(!(mc && mc.data && mc.id)) {
-						return null;
-					}
+		const mcIdList = Object.keys(readingsGrouped);
+		const mcList = mcIdList.map(this.getMicrocontrollerById);
+		const firstMc = await mcList[0];
+		if(!firstMc || !firstMc.data || !firstMc.data.current_event) {
+			return null;
+		}
+		const eventDocument = await firstMc.data.current_event.get();
+		const event = eventDocument.data();
+		const uploaded_readings = mcList.map(async mcPromise => {
+			const mc = await mcPromise;
+			if(!(mc && mc.data && mc.id)) {
+				return null;
+			}
 
-					const readings = readingsGrouped[mc.id];
-					const currentStand: DocumentReference = mc.data.current_stand
-					const standSnapshot: DocumentSnapshot = await currentStand.get();
-					const stand: DocumentData|undefined = standSnapshot.data();
-					if (!standSnapshot.exists || !stand) {
-						console.log('No such document!');
-						return null
-					}
-					const metadata = stand.metadata.concat(readings);
-					//todo: controllo se non sto inserende la stessa reading due volte
-					//currentStand.update({ metadata });
-					return readings;
-				})
-		);
+			const readings = readingsGrouped[mc.id];
+			const currentStand: DocumentReference = mc.data.current_stand
+			const standSnapshot: DocumentSnapshot = await currentStand.get();
+			const stand: DocumentData|undefined = standSnapshot.data();
+			if (!standSnapshot.exists || !stand) {
+				console.log('No such document!');
+				return null
+			}
+			const metadata = stand.metadata.concat(readings);
+			//todo: controllo se non sto inserende la stessa reading due volte
+			//currentStand.update({ metadata });
+			return {
+				event,
+				uploaded_readings: metadata
+			};
+		});
+
+		const output = (await Promise.all(uploaded_readings))[0];
+		return output;
 	}
 }

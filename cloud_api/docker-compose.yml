@@ -9,7 +9,7 @@ services:
             - .:/app
             - dist:/app/dist
         ports:
-            - "3000:3000"
+            - "${PORT}:${PORT}"
         environment:
             NODE_ENV: ${NODE_ENV}
         env_file:

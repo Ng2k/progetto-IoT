@@ -11,4 +11,8 @@ export class DatabaseHandler {
 	async uploadReadings(readings: any): Promise<any> {
 		return this._client.updateReadings(readings);
 	}
+
+	async getStandsOccupancy(eventId: string): Promise<any> {
+		return this._client.getStandsOccupancy(eventId);
+	}
 }

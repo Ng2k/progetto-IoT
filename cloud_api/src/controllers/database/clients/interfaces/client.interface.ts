@@ -15,4 +15,11 @@ export interface IClient {
 	 * @throws {Error} - Se non è possibile aggiungere le rilevazioni
 	 */
 	updateReadings(readings: any): Promise<any>;
+
+	/**
+	 * Funzione per ottenere il numero di persone per ogni stand di un evento
+	 * @param {string} eventId - Id dell'evento
+	 * @returns {Promise<any>} Ritorna il numero di persone per ogni stand
+	 */
+	getStandsOccupancy(eventId: string): Promise<any>;
 }

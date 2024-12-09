@@ -10,6 +10,30 @@ import { Firestore } from "./database/clients/";
 import { HttpStatusCode } from "../http-status-code";
 
 /**
+ * Funzione per ottenere il numero di persone per ogni stand di un evento
+ * @param {Request} req 
+ * @param {Response} res 
+ */
+const getStandsOccupancy = async (req: Request, res: Response) => {
+	const { event } = req.params;
+	const database: DatabaseHandler = new DatabaseHandler(
+		new Firestore(),
+	);
+
+	try {
+		const data = await database.getStandsOccupancy(event);
+		res.status(HttpStatusCode.OK).json({
+			message: "Stands occupancy",
+			data
+		});
+	} catch (error) {
+		res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+			message: "Internal server error"
+		});
+	}
+};
+
+/**
  * Funzione per caricare le readings nel database
  * @param {Request} req 
  * @param {Response} res 
@@ -21,20 +45,21 @@ const uploadReadings = async (req: Request, res: Response) => {
 	);
 
 	try {
-		const temp = await database.uploadReadings(readings);
+		const { event, uploaded_readings } = await database.uploadReadings(readings);
 		res.status(HttpStatusCode.OK).json({
 			message: "Readings uploaded",
-			data: temp
+			event, 
+			data: uploaded_readings
 		});
 	} catch (error) {
+		console.log(error);
 		res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
 			message: "Internal server error"
 		});
 	}
 };
 
-const controller = {
+export const databaseController = {
 	uploadReadings,
+	getStandsOccupancy
 };
-
-export const databaseController = controller;
