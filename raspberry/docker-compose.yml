@@ -18,6 +18,7 @@ services:
         - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
         - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
         - LOG_DIR=${LOG_DIR}
+        - API_URL=${API_URL}
         networks:
         - mqtt-network
         restart: always
@@ -33,9 +34,10 @@ services:
         - mqtt-broker
         devices:
         - /dev/ttyACM0:/dev/ttyACM0
+        - /dev/ttyACM1:/dev/ttyACM1
         environment:
         - PYTHONUNBUFFERED=1
-        - PYTHON_ENV=development
+        - PYTHON_ENV=${PYTHON_ENV}
         - MQTT_BROKER=${MQTT_BROKER}
         - MQTT_PORT=${MQTT_PORT}
         - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}

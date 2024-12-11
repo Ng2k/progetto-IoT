@@ -16,17 +16,6 @@ class LogHandler(metaclass=SingletonMeta):
 
     Struttura delle cartelle gestita:
 
-    logs/
-        app/
-        errors/
-        	critical/
-        	warnings/
-        performance/
-        security/
-            auth/
-        metrics/
-        backups/
-
     Supporta logging giornaliero, rotazione automatica e backup dei log.
     """
     

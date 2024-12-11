@@ -104,8 +104,7 @@ export class Firestore implements IClient {
 				return null
 			}
 			const metadata = stand.metadata.concat(readings);
-			//todo: controllo se non sto inserende la stessa reading due volte
-			//currentStand.update({ metadata });
+			currentStand.update({ metadata });
 			return {
 				event,
 				uploaded_readings: metadata

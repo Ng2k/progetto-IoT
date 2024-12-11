@@ -2,4 +2,4 @@ paho-mqtt
 python-dotenv
 pytest
 coverage
-firebase-admin
+requests

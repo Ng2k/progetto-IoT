@@ -7,6 +7,8 @@ import time
 import uuid
 import paho.mqtt.client as mqtt
 import json
+import os
+import requests
 
 from .mqtt_error import MQTT_ERRORS, MQTTException
 from .mqtt_config import MqttConfig
@@ -18,10 +20,15 @@ from ...utils import Utils
 class MqttClient(IClient):
 	"""Classe per client MQTT"""
 
-	def __init__(self, config: MqttConfig, writer: IWriter, log_handler: LogHandler):
+	def __init__(
+		self,
+		config: MqttConfig,
+		#writer: IWriter,
+		log_handler: LogHandler
+	):
 		self._config = config
 		self._client = mqtt.Client()
-		self._writer = writer
+		#self._writer = writer
 		self._log_handler = log_handler
 
 	def on_connect(self, client, userdata, flags, rc):
@@ -51,8 +58,28 @@ class MqttClient(IClient):
 				log=f"{class_name} - Operazione {operation_id}: Messaggio ricevuto dal topic {msg.topic} - {payload_str}"
 			)
 			
-			#salvataggio record su file
-			self._writer.write_record(payload)
+			#todo creare una classe che si occupa dell'invio dati all'API
+
+			print("Api url:", f"{os.getenv('API_URL')}/database/upload-readings")
+
+			# Invio dati all'API
+			response = requests.post(
+				f"{os.getenv('API_URL')}/database/upload-readings",
+				json={
+					"readings": [ payload ]
+				}
+			)
+
+			if response.status_code == 200 or response.status_code == 201:
+				print("Riga inviata con successo:", row_dict)
+				print("Risposta API:", response.json())
+			else:
+				print(f"Errore durante l'invio. Status code: {response.status_code}")
+				print("Dettagli:", response.text)
+
+			#self._writer.write_record(payload)
+		except requests.exceptions.RequestException as e:
+			print(f"Errore durante la richiesta all'API: {e}")
 		except Exception as e:
 			self._log_handler.log_error(
 				logger=Utils.Logger.CRITICAL.value,

@@ -32,7 +32,7 @@ def main():
 
 	mqtt_client = MqttClient(
 		config=mqtt_config,
-		writer=csv_writer,
+		#writer=csv_writer,
 		log_handler=log_handler
 	)
 
