@@ -8,7 +8,7 @@ void EnterState::handle(Context* ctx)
     ctx->setContextOutput(Output::ENTER);
     ctx->incrementPeopleCount();
 
-    Serial.println("people: " + String(ctx->getPeopleCount()));
+    Serial.println(String(ctx->getPeopleCount()));
 
     MovementSensor* enterSensor = ctx->getEnterSensor();
     MovementSensor* exitSensor = ctx->getExitSensor();

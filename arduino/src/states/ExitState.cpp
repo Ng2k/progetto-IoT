@@ -8,7 +8,7 @@ void ExitState::handle(Context* ctx)
     ctx->setContextOutput(Output::EXIT);
     ctx->decrementPeopleCount();
 
-    Serial.println("people: " + String(ctx->getPeopleCount()));
+    Serial.println(String(ctx->getPeopleCount()));
 
     MovementSensor* enterSensor = ctx->getEnterSensor();
     MovementSensor* exitSensor = ctx->getExitSensor();
