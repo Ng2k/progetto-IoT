@@ -15,4 +15,8 @@ export class DatabaseHandler {
 	async getStandsOccupancy(eventId: string): Promise<any> {
 		return this._client.getStandsOccupancy(eventId);
 	}
+
+	async getCurrentEvent(masterId: string): Promise<any> {
+		return this._client.getCurrentEvent(masterId);
+	}
 }

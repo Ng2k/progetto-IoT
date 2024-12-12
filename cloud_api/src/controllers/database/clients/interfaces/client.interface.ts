@@ -22,4 +22,11 @@ export interface IClient {
 	 * @returns {Promise<any>} Ritorna il numero di persone per ogni stand
 	 */
 	getStandsOccupancy(eventId: string): Promise<any>;
+
+	/**
+	 * Funzione per ottenere l'evento corrente
+	 * @param {string} masterId - Id del ponte
+	 * @returns {Promise<any>} Ritorna l'evento corrente
+	 */
+	getCurrentEvent(masterId: string): Promise<any>;
 }

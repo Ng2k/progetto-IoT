@@ -10,6 +10,30 @@ import { Firestore } from "./database/clients/";
 import { HttpStatusCode } from "../http-status-code";
 
 /**
+ * Funzione per ottenere l'evento corrente
+ * @param {Request} req - richiesta
+ * @param {Response} res - risposta
+ */
+const getCurrentEvent = async (req: Request, res: Response) => {
+	const bridge = req.query["mp-master-id"] as string || "";
+	const database: DatabaseHandler = new DatabaseHandler(
+		new Firestore(),
+	);
+
+	try {
+		const data = await database.getCurrentEvent(bridge);
+		res.status(HttpStatusCode.OK).json({
+			message: "Current event",
+			data
+		});
+	} catch (error) {
+		res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+			message: "Internal server error"
+		});
+	}
+};
+
+/**
  * Funzione per ottenere il numero di persone per ogni stand di un evento
  * @param {Request} req 
  * @param {Response} res 
@@ -61,5 +85,6 @@ const uploadReadings = async (req: Request, res: Response) => {
 
 export const databaseController = {
 	uploadReadings,
-	getStandsOccupancy
+	getStandsOccupancy,
+	getCurrentEvent
 };

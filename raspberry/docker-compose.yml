@@ -11,7 +11,7 @@ services:
         - mqtt-broker
         environment:
         - PYTHONUNBUFFERED=1
-        - PYTHON_ENV=development
+        - PYTHON_ENV=${PYTHON_ENV}
         - MQTT_BROKER=${MQTT_BROKER}
         - MQTT_PORT=${MQTT_PORT}
         - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}

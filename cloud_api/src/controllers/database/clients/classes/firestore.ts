@@ -114,4 +114,23 @@ export class Firestore implements IClient {
 		const output = (await Promise.all(uploaded_readings))[0];
 		return output;
 	}
+
+	async getCurrentEvent(masterId: string): Promise<any> {
+		const bridgeRef = firestore
+			.collection("Microprocessors")
+			.doc(masterId);
+
+		const eventCollection = firestore
+			.collection("Events")
+			.where("microprocessor", "==", bridgeRef);
+		
+		const eventList = await eventCollection.get();
+		const [ eventRef ] = eventList.docs;
+		const currentEvent = eventRef.id;
+
+		return {
+			id: currentEvent,
+			...eventRef.data()
+		};
+	}
 }
