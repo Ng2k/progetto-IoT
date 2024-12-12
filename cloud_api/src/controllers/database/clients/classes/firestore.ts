@@ -129,8 +129,7 @@ export class Firestore implements IClient {
 		const currentEvent = eventRef.id;
 
 		return {
-			id: currentEvent,
-			...eventRef.data()
+			id: currentEvent
 		};
 	}
 }
