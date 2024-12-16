@@ -73,7 +73,7 @@ export class Firestore implements IClient {
 		const standsOccupancy = standListData.reduce((acc: { [key: string]: number }, stand: any) => {
 			return {
 				...acc,
-				[stand.id]: stand.metadata[stand.metadata.length - 1].people
+				[stand.name]: stand.metadata[stand.metadata.length - 1].people
 			};
 		}, {});
 		return standsOccupancy;	
@@ -126,10 +126,9 @@ export class Firestore implements IClient {
 		
 		const eventList = await eventCollection.get();
 		const [ eventRef ] = eventList.docs;
-		const currentEvent = eventRef.data();
-		const listStands = currentEvent.list_id_stands;
-
-		const stands = listStands.map(async (standId: string) => {
+		const currentEvent = eventRef.id;
+		//const listStands = currentEvent.list_id_stands;
+		/* const stands = listStands.map(async (standId: string) => {
 			const standRef = firestore.collection("Stands").doc(standId);
 			const stand = await standRef.get();
 			return {
@@ -138,9 +137,9 @@ export class Firestore implements IClient {
 			};
 		});
 
-		const [ stand ] = await Promise.all(stands)
+		const [ stand ] = await Promise.all(stands) */
 		return {
-			id: stand.name
+			id: currentEvent
 		};
 	}
 }
