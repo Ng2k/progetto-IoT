@@ -14,9 +14,38 @@ void setup() {
   lcd.backlight();
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.println("ciao");
+  Serial.begin(9600);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  if (!Serial.available()){
+    return;
+  }
+
+  String complete_data = Serial.readStringUntil('\0');
+
+  int row = 0;  // Inizializziamo dalla riga 0
+  int col = 0;  // Inizializziamo dalla colonna 0
+
+  for (unsigned int i=0; i < complete_data.length(); i++){
+    char current_char = complete_data[i];
+
+    if(current_char == '\n'){
+      row = (row == 1) ? 0 : row + 1 ;
+
+      col = 0;
+
+      lcd.setCursor(col, row);
+    } else {
+      lcd.print(current_char);
+      col++;
+
+      if(col > 15){
+        col = 0;
+        row = (row == 1) ? 0 : row + 1 ;
+
+        lcd.setCursor(col, row);
+      }
+    }
+  }
 }
