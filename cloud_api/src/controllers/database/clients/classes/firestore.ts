@@ -126,10 +126,21 @@ export class Firestore implements IClient {
 		
 		const eventList = await eventCollection.get();
 		const [ eventRef ] = eventList.docs;
-		const currentEvent = eventRef.id;
+		const currentEvent = eventRef.data();
+		const listStands = currentEvent.list_id_stands;
 
+		const stands = listStands.map(async (standId: string) => {
+			const standRef = firestore.collection("Stands").doc(standId);
+			const stand = await standRef.get();
+			return {
+				id: stand.id,
+				...stand.data()
+			};
+		});
+
+		const [ stand ] = await Promise.all(stands)
 		return {
-			id: currentEvent
+			id: stand.name
 		};
 	}
 }
