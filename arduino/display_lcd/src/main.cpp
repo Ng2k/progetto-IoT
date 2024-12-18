@@ -4,12 +4,12 @@
 
 LiquidCrystal_I2C lcd(0x27,20,4);
 
-const byte sda = 11;
-const byte scl = 12;
+const byte sda = 20;
+const byte scl = 21;
 
 void setup() {
   // put your setup code here, to run once:
-  Wire.begin(sda, scl);
+  Wire.begin();
   lcd.init();
   lcd.backlight();
   lcd.clear();
