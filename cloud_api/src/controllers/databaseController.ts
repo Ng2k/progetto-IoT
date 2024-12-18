@@ -28,7 +28,8 @@ const getCurrentEvent = async (req: Request, res: Response) => {
 		});
 	} catch (error) {
 		res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
-			message: "Internal server error"
+			message: "Internal server error",
+			error
 		});
 	}
 };
