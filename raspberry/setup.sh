@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source ./shell/utils.sh
-source ./shell/docker.sh
+source ./setup/shell/utils.sh
+source ./setup/shell/docker.sh
 
 # Controlla se lo script viene eseguito come root
 check_root() {

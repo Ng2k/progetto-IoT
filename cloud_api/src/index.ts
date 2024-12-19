@@ -11,7 +11,7 @@ import { databaseRouter } from "./routers"
 import { HttpStatusCode } from "./http-status-code";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = parseInt(process.env.PORT || "") || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +20,6 @@ app.all("*", (req, res) => {
 	res.status(HttpStatusCode.NOT_FOUND).json({ message: "Route not found" });
 });
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
 	console.log(`Server is running on port ${port}`);
 });

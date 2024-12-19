@@ -34,9 +34,13 @@ def get_event_id() -> str:
 	# chiamata per ottenere l'evento corrente associato al bridge
 	# http://localhost:3000/events/get-current-event?bridge_id=1234
 	# { list_stand, id, metadata }
-	endpoint = f"http://localhost:3000/database/events/get-current-event"
+	endpoint = f"http://172.17.0.1:3000/database/events/get-current-event"
 	mp_master_id = Utils.get_serial()
 	query_string = f"mp-master-id={mp_master_id}"
+
+	print(f"{endpoint}?{query_string}")
+	print(mp_master_id)
+
 	response = requests.get(f"{endpoint}?{query_string}")
 
 	if response.status_code == 200 or response.status_code == 201:
@@ -52,7 +56,7 @@ def get_data():
 	global event_id
 
 	# Invio dati all'API
-	api_url = "http://localhost:3000"
+	api_url = "http://172.17.0.1:3000"
 	endpoint = f"{api_url}/database/events/{event_id}/get-stands-occupancy"
 	response = requests.get(endpoint)
 	json = response.json()
@@ -75,9 +79,11 @@ async def main():
 		event_id = get_event_id()
 
 	devices = await get_devices()
+	print(devices)
 	serial_devices = devices['serial_devices']
 
 	for device in serial_devices:
+		print(device)
 		arduino = create_serial_communication(device['port'])
 		data = get_data()
 		write_to_arduino(arduino, data)
