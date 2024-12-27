@@ -27,8 +27,6 @@ services:
         volumes:
             - ./bridge_master:/app
             - logs-volume-master:/app/logs
-        env_file:
-            - /.env.${ENV}
     bridge-slave:
         build:
             context: ./bridge_slave
@@ -54,8 +52,6 @@ services:
             - logs-volume-slave:/app/logs
         devices:
             - /dev/ttyACM0:/dev/ttyACM0
-        env_file:
-            - /.env.${ENV}
     mqtt-broker:
         container_name: mqtt-broker
         image: eclipse-mosquitto:latest
@@ -66,21 +62,6 @@ services:
         volumes:
         - mosquitto-data:/mosquitto/data
         - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
-    bun-express:
-        build:
-            context: .
-            dockerfile: ../cloud_api/${DOCKERFILE}
-            args:
-                NODE_ENV: ${NODE_ENV}
-        volumes:
-            - ../cloud_api:/app
-            - ../cloud_api/dist:/app/dist
-        ports:
-            - "${PORT}:${PORT}"
-        environment:
-            NODE_ENV: ${NODE_ENV}
-        env_file:
-            - ../cloud_api/.env.${ENV}
 volumes:
     logs-volume-master: null
     logs-volume-slave: null
