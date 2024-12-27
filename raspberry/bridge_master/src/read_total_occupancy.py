@@ -34,7 +34,7 @@ def get_event_id() -> str:
 	# chiamata per ottenere l'evento corrente associato al bridge
 	# http://localhost:3000/events/get-current-event?bridge_id=1234
 	# { list_stand, id, metadata }
-	endpoint = f"http://172.17.0.1:3000/database/events/get-current-event"
+	endpoint = f"{os.getenv('API_URL')}database/events/get-current-event"
 	mp_master_id = Utils.get_serial()
 	query_string = f"mp-master-id={mp_master_id}"
 
@@ -56,8 +56,7 @@ def get_data():
 	global event_id
 
 	# Invio dati all'API
-	api_url = "http://172.17.0.1:3000"
-	endpoint = f"{api_url}/database/events/{event_id}/get-stands-occupancy"
+	endpoint = f"{os.getenv('API_URL')}/database/events/{event_id}/get-stands-occupancy"
 	response = requests.get(endpoint)
 	json = response.json()
 

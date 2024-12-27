@@ -43,6 +43,7 @@ services:
         - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
         - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
         - LOG_DIR=${LOG_DIR}
+        - API_URL=${API_URL}
         networks:
         - mqtt-network
         restart: always
