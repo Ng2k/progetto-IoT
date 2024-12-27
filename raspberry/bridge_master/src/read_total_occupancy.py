@@ -34,7 +34,7 @@ def get_event_id() -> str:
 	# chiamata per ottenere l'evento corrente associato al bridge
 	# http://localhost:3000/events/get-current-event?bridge_id=1234
 	# { list_stand, id, metadata }
-	endpoint = f"{os.getenv('API_URL')}database/events/get-current-event"
+	endpoint = f"{os.getenv('API_URL')}/database/events/get-current-event"
 	mp_master_id = Utils.get_serial()
 	query_string = f"mp-master-id={mp_master_id}"
 
