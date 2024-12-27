@@ -7,9 +7,11 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 const byte sda = 20;
 const byte scl = 21;
 
+const byte sda_esp32 = 16;
+const byte scl_esp32 = 4;
+
 void setup() {
-	// put your setup code here, to run once:
-	Wire.begin();
+	Wire.begin(sda_esp32, scl_esp32);
 	lcd.init();
 	lcd.backlight();
 	lcd.clear();
@@ -18,9 +20,7 @@ void setup() {
 }
 
 void loop() {
-	if (!Serial.available()){
-		return;
-	}
+	if (!Serial.available()) return;
 
 	String complete_data = Serial.readStringUntil('\0');
 
