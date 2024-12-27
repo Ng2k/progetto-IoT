@@ -8,50 +8,54 @@ services:
             dockerfile: Dockerfile
         container_name: bridge-master
         depends_on:
-        - mqtt-broker
+            - mqtt-broker
         environment:
-        - PYTHONUNBUFFERED=1
-        - PYTHON_ENV=${PYTHON_ENV}
-        - MQTT_BROKER=${MQTT_BROKER}
-        - MQTT_PORT=${MQTT_PORT}
-        - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
-        - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
-        - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
-        - LOG_DIR=${LOG_DIR}
-        - API_URL=${API_URL}
+            - PYTHONUNBUFFERED=1
+            - PYTHON_ENV=${PYTHON_ENV}
+            - MQTT_BROKER=${MQTT_BROKER}
+            - MQTT_PORT=${MQTT_PORT}
+            - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
+            - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
+            - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
+            - LOG_DIR=${LOG_DIR}
+            - API_URL=${API_URL}
         networks:
-        - mqtt-network
+            - mqtt-network
         devices:
-        - /dev/ttyUSB0:/dev/ttyUSB0
+            - /dev/ttyUSB0:/dev/ttyUSB0
         restart: always
         volumes:
-        - ./bridge_master:/app
-        - logs-volume-master:/app/logs
+            - ./bridge_master:/app
+            - logs-volume-master:/app/logs
+        env_file:
+            - /.env.${ENV}
     bridge-slave:
         build:
             context: ./bridge_slave
             dockerfile: Dockerfile
         container_name: bridge-slave
         depends_on:
-        - mqtt-broker
+            - mqtt-broker
         environment:
-        - PYTHONUNBUFFERED=1
-        - PYTHON_ENV=${PYTHON_ENV}
-        - MQTT_BROKER=${MQTT_BROKER}
-        - MQTT_PORT=${MQTT_PORT}
-        - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
-        - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
-        - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
-        - LOG_DIR=${LOG_DIR}
-        - API_URL=${API_URL}
+            - PYTHONUNBUFFERED=1
+            - PYTHON_ENV=${PYTHON_ENV}
+            - MQTT_BROKER=${MQTT_BROKER}
+            - MQTT_PORT=${MQTT_PORT}
+            - MQTT_KEEPALIVE=${MQTT_KEEPALIVE}
+            - MQTT_PUB_TOPIC=${MQTT_PUB_TOPIC}
+            - MQTT_SUB_TOPIC=${MQTT_SUB_TOPIC}
+            - LOG_DIR=${LOG_DIR}
+            - API_URL=${API_URL}
         networks:
-        - mqtt-network
+            - mqtt-network
         restart: always
         volumes:
-        - ./bridge_slave:/app
-        - logs-volume-slave:/app/logs
+            - ./bridge_slave:/app
+            - logs-volume-slave:/app/logs
         devices:
-        - /dev/ttyACM0:/dev/ttyACM0
+            - /dev/ttyACM0:/dev/ttyACM0
+        env_file:
+            - /.env.${ENV}
     mqtt-broker:
         container_name: mqtt-broker
         image: eclipse-mosquitto:latest
@@ -62,6 +66,21 @@ services:
         volumes:
         - mosquitto-data:/mosquitto/data
         - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    bun-express:
+        build:
+            context: .
+            dockerfile: ../cloud_api/${DOCKERFILE}
+            args:
+                NODE_ENV: ${NODE_ENV}
+        volumes:
+            - ../cloud_api:/app
+            - ../cloud_api/dist:/app/dist
+        ports:
+            - "${PORT}:${PORT}"
+        environment:
+            NODE_ENV: ${NODE_ENV}
+        env_file:
+            - ../cloud_api/.env.${ENV}
 volumes:
     logs-volume-master: null
     logs-volume-slave: null
