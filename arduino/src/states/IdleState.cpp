@@ -18,7 +18,6 @@ void IdleState::handle(Context* ctx)
 	bool isExitHigh = exitSensor->isHigh();
 	
 	if (isEnterHigh || isExitHigh) {
-		Serial.println("Transition");
 		this->_lastTime = millis();
 
 		if(isEnterHigh) enterSensor->updateLastState(Reading::Read);
