@@ -1,8 +1,10 @@
 #include "header.h"
 #include "Context.h"
 
-// Functions declaration
-bool isTimeForNextReading();
+/* Definizione pin */
+const byte enterSensorPin = 2;
+const byte exitSensorPin = 4;
+const byte ledRgbPins[3] = { 11, 9, 7 };
 
 // Global variables
 Context* context;
@@ -12,23 +14,12 @@ void setup() {;
         new IdleState(),
 		new MovementSensor(enterSensorPin),
 		new MovementSensor(exitSensorPin),
-		new LedRgb(ledRgbPins),
-        Output::OFF,
-		0,
-        millis()
+		new LedRgb(ledRgbPins)
     );
 
     Serial.begin(9600);
 }
 
 void loop() {
-	if(!isTimeForNextReading()) return;
-
 	context->request();
-	context->setLastExecutionTime(millis());
-}
-
-// Functions definition:
-bool isTimeForNextReading() {
-    return millis() - context->getLastExecutionTime() >= frequency;
 }

@@ -12,9 +12,7 @@ const Reading MovementSensor::getLastReading() {
 	return this->_lastReading;
 }
 
-Reading MovementSensor::read() {
-	return digitalRead(this->_pin) == HIGH ? Reading::READ : Reading::IDLE;
-}
+bool MovementSensor::isHigh() { return digitalRead(this->_pin) == HIGH; }
 
 void MovementSensor::updateLastState(Reading lastReading) {
 	this->_lastReading = lastReading;

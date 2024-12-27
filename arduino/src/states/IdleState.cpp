@@ -2,30 +2,28 @@
 
 void IdleState::handle(Context* ctx)
 {
-    LedRgb* ledRgb = ctx->getLedRgb();
-    ledRgb->changeLedColor(idleRgb);
+	if(millis() - this->_lastTime <= this->_delayDebounce) return;
+	ctx->setContextOutput(Output::Off);
 
-	ctx->setContextOutput(Output::OFF);
+	LedRgb* ledRgb = ctx->getLedRgb();
+	ledRgb->clearColors();
 
 	MovementSensor* enterSensor = ctx->getEnterSensor();
 	MovementSensor* exitSensor = ctx->getExitSensor();
 
-    enterSensor->updateLastState(Reading::IDLE);
-    exitSensor->updateLastState(Reading::IDLE);
+    enterSensor->updateLastState(Reading::Idle);
+    exitSensor->updateLastState(Reading::Idle);
 
-	if(
-		enterSensor->read() == Reading::READ &&
-		exitSensor->read() == Reading::IDLE &&
-        exitSensor->getLastReading() == Reading::IDLE
-	) {
-		ctx->setContextState(new ReadInIdleState());
-	}
-	else if(
-		enterSensor->read() == Reading::IDLE &&
-		exitSensor->read() == Reading::READ &&
-        exitSensor->getLastReading() == Reading::IDLE &&
-		ctx->getPeopleCount() > 0
-	) {
-		ctx->setContextState(new ReadOutIdleState());
+	bool isEnterHigh = enterSensor->isHigh();
+	bool isExitHigh = exitSensor->isHigh();
+	
+	if (isEnterHigh || isExitHigh) {
+		Serial.println("Transition");
+		this->_lastTime = millis();
+
+		if(isEnterHigh) enterSensor->updateLastState(Reading::Read);
+		if(isExitHigh) exitSensor->updateLastState(Reading::Read);
+
+		ctx->setContextState(new WaitingForTransition());
 	}
 };

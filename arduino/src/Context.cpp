@@ -2,22 +2,11 @@
 
 Context::Context(
     State* contextState,
-    MovementSensor* enterSensor,
-    MovementSensor* exitSensor,
-    LedRgb* ledRgb,
-    Output contextOutput,
-    int peopleCount,
-    unsigned long lastExecutionTime
+    MovementSensor* enterSensor, MovementSensor* exitSensor,
+    LedRgb* ledRgb
 )
-{
-    this->_contextState = contextState;
-    this->_enterSensor = enterSensor;
-    this->_exitSensor = exitSensor;
-    this->_ledRgb = ledRgb;
-    this->_contextOutput = contextOutput;
-    this->_peopleCount = peopleCount;
-    this->_lastExecutionTime = lastExecutionTime;
-}
+    : _peopleCount(0), _contextOutput(Output::Off), _contextState(contextState),
+    _enterSensor(enterSensor), _exitSensor(exitSensor), _ledRgb(ledRgb) {}
 
 void Context::request() {
     State* ctxState = this->getContextState();
@@ -26,14 +15,16 @@ void Context::request() {
     LedRgb* ledRgb = this->_ledRgb;
 	switch (this->getContextOutput())
 	{
-		case Output::ENTER:
-			ledRgb->changeLedColor(enterRgb);
+		case Output::Enter:
+			ledRgb->setEnterColors();
 			break;
-		case Output::EXIT:
-			ledRgb->changeLedColor(exitRgb);
+		case Output::Exit:
+			ledRgb->setExitColors();
 			break;
-		default:
-			ledRgb->changeLedColor(idleRgb);
-			break;
+        case Output::Error:
+            ledRgb->setErrorColors();
+            break;
+        default:
+            break;
 	}
 }

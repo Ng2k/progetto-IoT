@@ -1,4 +1,4 @@
-#include "LedRGB.h"
+#include "LedRgb.h"
 
 LedRgb::LedRgb(const byte pins[3])
 {
@@ -18,3 +18,8 @@ void LedRgb::changeLedColor(const byte rgbValues[3])
 		analogWrite(this->_pins[i], rgbValues[i]);
 	}
 }
+
+void LedRgb::setErrorColors() { changeLedColor(errorRgb); }
+void LedRgb::setExitColors() { changeLedColor(exitRgb); }
+void LedRgb::setEnterColors() { changeLedColor(enterRgb); }
+void LedRgb::clearColors() { changeLedColor(clearRgb); }

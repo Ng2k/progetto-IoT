@@ -2,10 +2,7 @@
 
 void EnterState::handle(Context* ctx)
 {
-    LedRgb* ledRgb = ctx->getLedRgb();
-    ledRgb->changeLedColor(enterRgb);
-
-    ctx->setContextOutput(Output::ENTER);
+    ctx->setContextOutput(Output::Enter);
     ctx->incrementPeopleCount();
 
     Serial.println(String(ctx->getPeopleCount()));
@@ -13,8 +10,9 @@ void EnterState::handle(Context* ctx)
     MovementSensor* enterSensor = ctx->getEnterSensor();
     MovementSensor* exitSensor = ctx->getExitSensor();
 
-    enterSensor->updateLastState(Reading::READ);
-    exitSensor->updateLastState(Reading::READ);
+    enterSensor->updateLastState(Reading::Read);
+    exitSensor->updateLastState(Reading::Read);
 
+    this->_lastTime = millis();
     ctx->setContextState(new IdleState());
 }

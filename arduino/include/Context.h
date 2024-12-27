@@ -1,6 +1,7 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
+#include "header.h"
 #include "LedRgb.h"
 #include "MovementSensor.h"
 #include "State.h"
@@ -8,100 +9,77 @@
 class State;
 
 class Context {
-private:
-    State* _contextState;
-    MovementSensor* _enterSensor;
-    MovementSensor* _exitSensor;
-    LedRgb* _ledRgb;
-    int _peopleCount;
-    unsigned long _lastExecutionTime;
-    Output _contextOutput;
 public:
-    /**
-     * @brief Constructor for Context class
-     *
-     * @param state Pointer to the initial state object. The Context object will take ownership of the state object.
-     */
+    /** @brief Constructor for Context class */
     Context(
         State* contextState,
         MovementSensor* enterSensor,
         MovementSensor* exitSensor,
-        LedRgb* ledRgb,
-        Output contextOutput,
-        int peopleCount,
-        unsigned long lastExecutionTime
+        LedRgb* ledRgb
     );
 
     /**
      * @brief Funzione per ottenere il sensore di ingresso
-     *
      * @return il sensore di ingresso
-    */
-    MovementSensor* getEnterSensor()
-    {
-        return this->_enterSensor;
-    }
+     */
+    MovementSensor* getEnterSensor() { return this->_enterSensor; }
 
     /**
      * @brief Funzione per ottenere il sensore di uscita
-     *
      * @return il sensore di uscita
-    */
-    MovementSensor* getExitSensor()
-    {
-        return this->_exitSensor;
-    }
+     */
+    MovementSensor* getExitSensor() { return this->_exitSensor; }
 
-    LedRgb* getLedRgb()
-    {
-        return this->_ledRgb;
-    }
+    /**
+     * @brief Funzione per ottenere il LED RGB
+     * @return il LED RGB
+     */
+    LedRgb* getLedRgb() { return this->_ledRgb; }
 
+    /**
+     * @brief Funzione per ottenere l'output del contesto
+     * @return l'output del contesto
+     */
     Output getContextOutput() const { return this->_contextOutput; };
-    void setContextOutput(Output contextOutput)
-    {
-        this->_contextOutput = contextOutput;
-    };
 
+    /**
+     * @brief Funzione per impostare l'output del contesto
+     * @param output output del contesto
+     */
+    void setContextOutput(Output output) { this->_contextOutput = output; };
+
+    /**
+     * @brief Funzione per ottenere lo stato del contesto
+     * @return lo stato del contesto
+     */
     State* getContextState() { return this->_contextState; }
-    void setContextState(State* contextState)
-    {
-        this->_contextState = contextState;
-    }
+
+    /**
+     * @brief Funzione per impostare lo stato del contesto
+     * @param state stato del contesto
+     */
+    void setContextState(State* state) { this->_contextState = state; }
 
     /**
      * @brief Funzione per ottenere il numero di persone nel contesto
-     *
      * @return numero di persone 
-    */
+     */
     int getPeopleCount() { return this->_peopleCount; }
 
+    /** @brief Funzione per incrementare il numero di persone nel contesto */
     void incrementPeopleCount() { this->_peopleCount++; }
+
+    /** @brief Funzione per decrementare il numero di persone nel contesto */
     void decrementPeopleCount() { this->_peopleCount--; }
 
-    /**
-     * @brief Funzione per ottenere il numero di ms dall'ultima esecuzione della funzione loop()
-     *
-     * @return numero di millisecondi dall'ultima esecuzione
-    */
-    unsigned long getLastExecutionTime()
-    {
-        return this->_lastExecutionTime;
-    }
-
-    /**
-     * @brief Funzione per salvare il numero di ms dell'ultima esecuzione della funzione loop()
-     *
-     * @param lastExecutionTime
-    */
-    void setLastExecutionTime(unsigned long lastExecutionTime)
-    {
-        this->_lastExecutionTime = lastExecutionTime;
-    }
-
-    /**
-    * @brief Funzione per gestire il flusso di operazioni del progetto
-    */
+    /** @brief Funzione per gestire il flusso di operazioni del progetto */
     void request();
+private:
+    int _peopleCount;
+    Output _contextOutput;
+    State* _contextState;
+    MovementSensor* _enterSensor;
+    MovementSensor* _exitSensor;
+    LedRgb* _ledRgb;
 };
 #endif // CONTEXT_H
