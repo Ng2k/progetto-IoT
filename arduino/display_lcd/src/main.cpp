@@ -11,17 +11,18 @@ void setup() {
 	if (!i2CAddrTest(0x27)) {
 		lcd = LiquidCrystal_I2C(0x3F, 16, 2);
 	}
-	lcd.init(); // LCD driver initialization
-	lcd.backlight(); // Open the backlight
-	lcd.setCursor(0,0); // Move the cursor to row 0, column 0
-	lcd.print("hello world"); // The print content is displayed
+	lcd.init(); 
+	lcd.backlight();
+	lcd.clear();
+	lcd.setCursor(0,0);
 
-	Serial.begin(115200);
+	Serial.begin(9600);
 }
 
 void loop() {
 	if (!Serial.available()) return;
 
+	lcd.clear();
 	String complete_data = Serial.readStringUntil('\0');
 
 	int row = 0;  // Inizializziamo dalla riga 0
