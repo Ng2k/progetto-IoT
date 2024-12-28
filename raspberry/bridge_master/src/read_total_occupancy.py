@@ -25,7 +25,6 @@ def write_to_arduino(arduino, data):
 	print(data)
 	arduino.write((data + '\0').encode())
 
-
 async def get_devices():
 	scanner = DeviceScanner(logger_handler=LogHandler("./logs"))
 	return await scanner.scan_devices()
@@ -39,7 +38,6 @@ def get_event_id() -> str:
 	query_string = f"mp-master-id={mp_master_id}"
 
 	print(f"{endpoint}?{query_string}")
-	print(mp_master_id)
 
 	response = requests.get(f"{endpoint}?{query_string}")
 
@@ -73,19 +71,22 @@ def get_data():
 async def main():
 	global event_id
 
-	# Se l'ID evento non è ancora stato ottenuto, chiamalo e salvalo
-	if not event_id:
-		event_id = get_event_id()
+	while True:
 
-	devices = await get_devices()
-	print(devices)
-	serial_devices = devices['serial_devices']
+		# Se l'ID evento non è ancora stato ottenuto, chiamalo e salvalo
+		if not event_id:
+			event_id = get_event_id()
 
-	for device in serial_devices:
-		print(device)
-		arduino = create_serial_communication(device['port'])
-		data = get_data()
-		write_to_arduino(arduino, data)
+		devices = await get_devices()
+		print(devices)
+		serial_devices = devices['serial_devices']
+
+		for device in serial_devices:
+			arduino = create_serial_communication(device['port'])
+			data = get_data()
+			write_to_arduino(arduino, data)
+		
+		await asyncio.sleep(5)
 
 if __name__ == "__main__":
 	#event_id = get_event_id()

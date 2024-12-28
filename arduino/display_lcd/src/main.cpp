@@ -15,6 +15,8 @@ void setup() {
 	lcd.backlight(); // Open the backlight
 	lcd.setCursor(0,0); // Move the cursor to row 0, column 0
 	lcd.print("hello world"); // The print content is displayed
+
+	Serial.begin(115200);
 }
 
 void loop() {
