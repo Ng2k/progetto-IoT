@@ -20,7 +20,6 @@ void IdleState::handle(Context* ctx)
 	if (isEnterHigh || isExitHigh) {
 		this->_lastTime = millis();
 
-		//Serial.println("condition: " + String(isExitHigh && ctx->getPeopleCount() <= 0));
 		if (isExitHigh && ctx->getPeopleCount() <= 0) {
 			ctx->setContextState(new ErrorState());
 		}
