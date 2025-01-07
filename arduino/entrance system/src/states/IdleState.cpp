@@ -20,6 +20,10 @@ void IdleState::handle(Context* ctx)
 	if (isEnterHigh || isExitHigh) {
 		this->_lastTime = millis();
 
+		if (isExitHigh && ctx->getPeopleCount() <= 0) {
+			ctx->setContextState(new ErrorState());
+			return;
+		}
 		if(isEnterHigh) enterSensor->updateLastState(Reading::Read);
 		if(isExitHigh) exitSensor->updateLastState(Reading::Read);
 
