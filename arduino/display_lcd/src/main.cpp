@@ -5,9 +5,10 @@
 LiquidCrystal_I2C lcd(0x27,20,4);
 
 bool i2CAddrTest(uint8_t addr);
+String lastText = "";
 
 void setup() {
-	Wire.begin(SDA, SCL); // attach the IIC pin
+	Wire.begin(); // attach the IIC pin
 	if (!i2CAddrTest(0x27)) {
 		lcd = LiquidCrystal_I2C(0x3F, 16, 2);
 	}
@@ -22,14 +23,17 @@ void setup() {
 void loop() {
 	if (!Serial.available()) return;
 
+	String currentText = Serial.readStringUntil('\0');
+
+	if (lastText == currentText) return;
+
 	lcd.clear();
-	String complete_data = Serial.readStringUntil('\0');
 
 	int row = 0;  // Inizializziamo dalla riga 0
 	int col = 0;  // Inizializziamo dalla colonna 0
 
-	for (unsigned int i=0; i < complete_data.length(); i++){
-		char current_char = complete_data[i];
+	for (unsigned int i=0; i < currentText.length(); i++){
+		char current_char = currentText[i];
 
 		if(current_char == '\n'){
 			row = (row == 1) ? 0 : row + 1 ;
@@ -49,6 +53,8 @@ void loop() {
 			}
 		}
 	}
+
+	lastText = currentText; 
 }
 
 bool i2CAddrTest(uint8_t addr) {
