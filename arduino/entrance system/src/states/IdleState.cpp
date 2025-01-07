@@ -20,13 +20,17 @@ void IdleState::handle(Context* ctx)
 	if (isEnterHigh || isExitHigh) {
 		this->_lastTime = millis();
 
+		//Serial.println("condition: " + String(isExitHigh && ctx->getPeopleCount() <= 0));
 		if (isExitHigh && ctx->getPeopleCount() <= 0) {
 			ctx->setContextState(new ErrorState());
-			return;
 		}
-		if(isEnterHigh) enterSensor->updateLastState(Reading::Read);
-		if(isExitHigh) exitSensor->updateLastState(Reading::Read);
-
-		ctx->setContextState(new WaitingForTransition());
+		else if(isEnterHigh) {
+			enterSensor->updateLastState(Reading::Read);
+			ctx->setContextState(new WaitingForTransition());
+		}
+		else if(isExitHigh) {
+			exitSensor->updateLastState(Reading::Read);
+			ctx->setContextState(new WaitingForTransition());
+		}
 	}
 };
