@@ -6,7 +6,7 @@
 import type { Request, Response } from "express";
 
 import { DatabaseHandler } from "./database/databaseHandler";
-import { Firestore } from "./database/clients/";
+import { Firestore, SupabasePostgres } from "./database/clients/";
 import { HttpStatusCode } from "../http-status-code";
 
 /**
@@ -17,7 +17,7 @@ import { HttpStatusCode } from "../http-status-code";
 const getCurrentEvent = async (req: Request, res: Response) => {
 	const bridge = req.query["mp-master-id"] as string || "";
 	const database: DatabaseHandler = new DatabaseHandler(
-		new Firestore(),
+		new SupabasePostgres(),
 	);
 
 	try {
@@ -42,7 +42,7 @@ const getCurrentEvent = async (req: Request, res: Response) => {
 const getStandsOccupancy = async (req: Request, res: Response) => {
 	const { event } = req.params;
 	const database: DatabaseHandler = new DatabaseHandler(
-		new Firestore(),
+		new SupabasePostgres(),
 	);
 
 	try {
@@ -66,7 +66,7 @@ const getStandsOccupancy = async (req: Request, res: Response) => {
 const uploadReadings = async (req: Request, res: Response) => {
 	const { readings } = req.body;
 	const database: DatabaseHandler = new DatabaseHandler(
-		new Firestore(),
+		new SupabasePostgres(),
 	);
 
 	try {
