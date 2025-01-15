@@ -14,5 +14,5 @@ export interface IStorageClient {
 	 * @description Metodo per scaricare un file dallo storage
 	 * @returns {Promise<object>} - Trend degli stand dell'evento calcolato dal modello di ML/AI
 	 */
-	getStandTrends(): Promise<object>;
+	getStandTrends(): Promise<object[]>;
 }

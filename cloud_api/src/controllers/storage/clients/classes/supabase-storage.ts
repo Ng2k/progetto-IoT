@@ -11,7 +11,7 @@ import type { IStorageClient } from "../interfaces/storage-client.interface";
  * @description Classe per la gestione dello storage di Supabase
  */
 export class SupabaseStorage implements IStorageClient {
-	async getStandTrends(): Promise<object> {
+	async getStandTrends(): Promise<object[]> {
 		const bucket = process.env.SUPABASE_BUCKET || "";
 		const file = process.env.DATABASE_EXPORT_CSV || "";
 

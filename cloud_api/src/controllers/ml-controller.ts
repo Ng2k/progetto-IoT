@@ -23,9 +23,25 @@ const getStandTrends = async (req: Request, res: Response) => {
 	const storage = new StorageHandler(new SupabaseStorage());
 	try {
 		const data = await storage.getStandTrends();
+		const threshold = 5;
+		const margin = 1;
+
 		res.status(HttpStatusCode.OK).json({
 			message: "Stand trends",
-			data
+			data: data.reduce((acc: any, curr: any) => {
+				const { stand_name: name, readings } = curr;
+
+				const peopleAvg = readings.reduce((acc: number, curr: any) => {
+					const { people } = curr;
+					return acc + people;
+				}, 0) / readings.length;
+	
+				if(peopleAvg > threshold + margin) acc[name] = +1;
+				else if(peopleAvg < threshold - margin) acc[name] = -1;
+				else acc[name] = 0;
+	
+				return acc;
+			}, {})
 		});
 	} catch (error) {
 		res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
