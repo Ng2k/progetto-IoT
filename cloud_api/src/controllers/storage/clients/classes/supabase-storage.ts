@@ -23,7 +23,7 @@ export class SupabaseStorage implements IStorageClient {
 
 		const csv = await data.text() || "";
 		const trends = this.csvToObject(csv);
-
+		
 		return trends;
 	}
 
@@ -35,12 +35,19 @@ export class SupabaseStorage implements IStorageClient {
 	 */
 	private csvToObject(csv: string): object[] {
 		const lines = csv.split("\n");
-		const headers = lines[0].split(",").map(header => header.replace(/"/g, ''));
+		if (lines.length === 0) return [];
+	
+		const headers = lines[0].split(",").map(header => header.trim().replace(/^"|"$/g, ''));
 		const result = lines.slice(1).map(line => {
-			const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g)?.map(value => value.replace(/"/g, '')) || [];
+			const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g)?.map(value => value.trim().replace(/^"|"$/g, '')) || [];
 			const obj: any = {};
 			headers.forEach((header, index) => {
-				obj[header] = values[index];
+				try {
+					obj[header] = (header === "readings") ? JSON.parse(values[index].replace(/""/g, '"')) : values[index];
+				} catch (error) {
+					console.error(`Error parsing value for header ${header}:`, error);
+					obj[header] = values[index];
+				}
 			});
 			return obj;
 		});
