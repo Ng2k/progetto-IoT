@@ -72,8 +72,21 @@ export class SupabasePostgres implements IClient {
 			return null;
 		}
 
-		return data.reduce((acc: { [key: string]: any }, e) => {
-			if(e.name) acc[e.name] = e.readings[e.readings.length - 1].people;
+		const totalPeople = data.reduce((acc: number, e: any) => {
+			const lastReading = e.readings[e.readings.length - 1];
+			return acc + lastReading.people;
+		}, 0);
+
+		return data.reduce((acc: { [key: string]: any }, e: any) => {
+			const people = e.readings[e.readings.length - 1].people;
+			const percentage = (people / totalPeople) * 100;
+
+			let value = people;
+			if(percentage < 35) value += " ◙";
+			else if(percentage < 70) value += " ◙◙";
+			else value += " ◙◙◙";
+
+			acc[e.name] = value
 			return acc;
 		}, {});
 	}
